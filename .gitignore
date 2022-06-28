@@ -13,3 +13,6 @@ databases
 
 # Secrets
 *.env
+
+# Notebooks for debug
+*.ipynb

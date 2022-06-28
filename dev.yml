@@ -15,6 +15,8 @@ services:
       - MYSQL_HOST=db
       - DJANGO_DEBUG=True
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - AWS_CLIENT_ID=${AWS_CLIENT_ID}
+      - AWS_COGNITO_POOL_ID=${AWS_COGNITO_POOL_ID}
     volumes:
       - ./backend:/usr/src/app
       - ./backend:/code

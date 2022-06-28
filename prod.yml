@@ -18,6 +18,8 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - DJANGO_DEBUG=False
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - AWS_CLIENT_ID=${AWS_CLIENT_ID}
+      - AWS_COGNITO_POOL_ID=${AWS_COGNITO_POOL_ID}
     depends_on:
       - db
 
