@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=db
+    volumes:
+      - ./databases:/var/lib/mysql
+
+  nginx:
+    image: nginx:1.13
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./backend/static_root:/usr/src/app/static_root
+    depends_on:
+      - db
+      - frontend
+      - backend
+
+volumes:
+  databases:

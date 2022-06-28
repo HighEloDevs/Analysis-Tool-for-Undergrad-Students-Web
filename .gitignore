@@ -1,0 +1,15 @@
+# Virtual Environments
+venv
+
+# Python
+__pycache__
+*.pyc
+
+# NPM / NuxtJS
+node_modules
+
+# Databases
+databases
+
+# Secrets
+*.env

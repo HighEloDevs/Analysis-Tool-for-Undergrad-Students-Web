@@ -1,0 +1,31 @@
+version: "3"
+services:
+  backend:
+    build:
+      context: ./backend
+    command: bash -c "
+      python manage.py migrate &&
+      gunicorn --workers 3 --bind 0.0.0.0:8000 project.wsgi:application"
+    expose:
+      - "8000:8000"
+    volumes:
+      - static:/usr/src/app/static_root
+      - media:/usr/src/app/media
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_NAME=db
+      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - DJANGO_DEBUG=False
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    expose:
+      - "3000"
+    command: bash -c "npm run build && npm run start"
+    environment:
+      - AXIOS_BASEURL=http://backend:8000/api
+      - AXIOS_BROWSER_BASEURL=/api

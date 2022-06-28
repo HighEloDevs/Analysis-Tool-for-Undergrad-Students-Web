@@ -1,0 +1,33 @@
+version: "3"
+services:
+  backend:
+    build: ./backend
+    expose:
+      - "8000:8000"
+    restart: on-failure:10
+    command: bash -c "
+      python manage.py migrate &&
+      /usr/local/bin/gunicorn django51.wsgi:application -w 2 -b :8000 --reload"
+    environment:
+      - MYSQL_DB=db
+      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_HOST=db
+      - DJANGO_DEBUG=True
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+    volumes:
+      - ./backend:/usr/src/app
+      - ./backend:/code
+
+  frontend:
+    build: ./frontend
+    expose:
+      - "3000:3000"
+    command: "npm run dev"
+    environment:
+      - AXIOS_BASEURL=http://backend:8000/api
+      - AXIOS_BROWSER_BASEURL=/api
+      - CHOKIDAR_USEPOLLING=true # This enables the hot reloading
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
