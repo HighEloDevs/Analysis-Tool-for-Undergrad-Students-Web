@@ -12,7 +12,7 @@ services:
   nginx:
     image: nginx:1.13
     ports:
-      - "80:80"
+      - "25565:25565"
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - ./backend/static_root:/usr/src/app/static_root

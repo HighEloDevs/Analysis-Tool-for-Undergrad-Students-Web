@@ -3,10 +3,10 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - frontend',
-    title: 'frontend',
+    titleTemplate: '%s',
+    title: 'Analysis Tool for Undergrad Students',
     htmlAttrs: {
-      lang: 'en',
+      lang: 'pt-br',
     },
     meta: [
       { charset: 'utf-8' },
@@ -21,7 +21,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: ['~/plugins/axios',],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -36,6 +36,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/auth',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -66,4 +67,32 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+
+  router: { middleware: ['auth'] },
+
+  auth: {
+    strategies: {
+      local: {
+        token: {
+          property: 'access',
+          global: true
+        },
+        user: {
+          property: "user"
+        },
+        endpoints: {
+          login: {url: '/auth/login/', method: 'post', propertyName: 'access'},
+          logout: {url: '/auth/logout/', method: 'post'},
+          user: {url: '/auth/user/', method: 'get'},
+        }
+      }
+    },
+
+    redirect: {
+      login: '/login',
+      logout: '/login',
+      callback: '/login',
+      home: '/'
+    }
+  }
 }
