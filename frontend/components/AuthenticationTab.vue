@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card class="round">
     <v-alert
       class="mb-3"
       transition="scale-transition"

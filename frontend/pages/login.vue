@@ -1,7 +1,10 @@
 <template>
-  <v-container fluid class="d-flex justify-center align-center fill-height">
-    <h1>Analysis Tool for Undergrad Students</h1>
-    <AuthenticationTab></AuthenticationTab>
+  <v-container 
+    class="d-md-flex justify-md-space-between d-flex-column justify-center align-center fill-height"
+    style="max-width: 900px";  
+  >
+    <img src="~/static/logos/logo_vertical.svg" width="350px" class=""></img>
+    <AuthenticationTab />
   </v-container>
 </template>
 
@@ -16,3 +19,9 @@ export default {
   methods: {},
 }
 </script>
+
+<style lang="css">
+.logo {
+  font-family: 'Unica One', cursive;
+}
+</style>
