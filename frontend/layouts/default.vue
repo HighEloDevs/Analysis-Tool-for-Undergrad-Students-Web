@@ -8,13 +8,15 @@
       color="primary"
       flat
     >
-      <v-toolbar-title class="text-subtitle-1">
+      <v-toolbar-title class="text-subtitle-1 grey--text text--lighten-2">
         Bem-vindo,
         <strong>{{ $auth.user.first_name }} {{ $auth.user.last_name }}</strong
         >!
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn text small @click="logout">Logout</v-btn>
+      <v-btn text small class="grey--text text--lighten-2" @click="logout"
+        >Logout</v-btn
+      >
     </v-app-bar>
     <v-main>
       <Nuxt />
