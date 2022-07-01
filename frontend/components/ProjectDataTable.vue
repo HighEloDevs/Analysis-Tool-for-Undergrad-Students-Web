@@ -31,22 +31,38 @@
         </v-card>
       </v-dialog>
 
-      <v-text-field
-        class="pa-3"
-        label="Procurar projetos"
-        outlined
-        dense
-        hide-details
-        v-model="search"
-      >
-        <template v-slot:prepend-inner>
-          <v-icon class="mt-1 mr-2" small>fa-magnifying-glass</v-icon>
+		<v-container class="d-flex align-center">
+			<v-text-field
+			  class="pa-3"
+			  label="Procurar projetos"
+			  outlined
+			  dense
+			  hide-details
+			  v-model="search"
+			>
+			  <template v-slot:prepend-inner>
+				<v-icon class="mt-1 mr-2" small>fa-magnifying-glass</v-icon>
+			  </template>
+			</v-text-field>
+
+			<v-menu offset-y>
+        <template v-slot:activator="{ on , attrs }">
+          <v-btn v-on="on" v-bind="attrs" color="primary">
+            Mais
+            <v-icon small right>fa-caret-down</v-icon>
+          </v-btn>
         </template>
-      </v-text-field>
+        <v-list>
+          <v-list-item @click="deleteSelectedProjects">  
+            <v-list-item-title class="red--text"> Deletar </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+		</v-container>
     </template>
 
     <template v-slot:item.title="{ item }">
-      <v-list-item two-line dense>
+      <v-list-item two-line dense class="px-0">
         <v-list-item-avatar>
           <v-btn :href="item.url" icon>
             <v-icon small>fa-up-right-from-square</v-icon>
@@ -115,6 +131,10 @@
     <template v-slot:no-data>
       Clique em 'Novo Projeto' para criar um novo projeto.
     </template>
+
+    <template v-slot:no-results>
+      Nenhum resultado encontrado.
+    </template>
   </v-data-table>
 </template>
 
@@ -162,6 +182,12 @@ export default {
         return colors[0].color
       }
     },
+
+    deleteSelectedProjects() {
+      this.selectedProjects.forEach((i) => {
+        this.items.splice(this.items.indexOf(i), 1)
+      })
+    }
   },
 }
 </script>

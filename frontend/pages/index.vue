@@ -1,5 +1,5 @@
 <template>
-  <v-container class="ma-0 pa-0">
+  <v-container class="ma-0 pa-0" style="max-width: 100%">
     <!-- New folder dialog -->
     <v-dialog v-model="newFolderDialog" max-width="300px">
       <v-card>
