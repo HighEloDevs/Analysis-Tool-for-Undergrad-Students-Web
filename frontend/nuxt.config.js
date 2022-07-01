@@ -66,6 +66,9 @@ export default {
         },
       },
     },
+    defaultAssets: {
+      icons: 'fa'
+    }
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

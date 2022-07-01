@@ -31,7 +31,7 @@
       <v-text-field
         class="pa-3"
         label="Procurar projetos"
-        prepend-inner-icon="mdi-magnify"
+        prepend-inner-icon="fa-magnifying-glass"
         outlined
         dense
         hide-details
@@ -43,7 +43,7 @@
       <v-list-item two-line dense>
         <v-list-item-avatar>
           <v-btn :href="item.url" icon>
-            <v-icon>mdi-open-in-new</v-icon>
+            <v-icon small>fa-up-right-from-square</v-icon>
           </v-btn>
         </v-list-item-avatar>
         <v-list-item-content class="ma-0 pa-0">
@@ -54,7 +54,7 @@
     </template>
 
     <template v-slot:item.actions="{ item }">
-      <v-icon small class="ml-2" @click="deleteItem(item)"> mdi-delete </v-icon>
+      <v-icon small class="ml-2" @click="deleteItem(item)"> fa-delete </v-icon>
     </template>
 
     <template v-slot:item.folders="{ item }">

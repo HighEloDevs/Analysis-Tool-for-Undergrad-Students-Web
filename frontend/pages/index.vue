@@ -11,6 +11,9 @@
             <v-text-field
               v-model="newFolderName"
               label="Nome da pasta"
+              rules=""
+              maxlength="25"
+              counter
             ></v-text-field>
           </v-container>
         </v-card-text>
@@ -44,7 +47,7 @@
 
         <v-list-item dense @click="newFolderDialog = !newFolderDialog">
           <v-list-item-icon>
-            <v-icon dense>mdi-plus</v-icon>
+            <v-icon dense>fa-plus</v-icon>
           </v-list-item-icon>
           <v-list-item-title> Nova Pasta </v-list-item-title>
         </v-list-item>
@@ -56,8 +59,8 @@
           dense
         >
           <v-list-item-icon>
-            <v-icon
-              v-text="i == selectedFolder ? 'mdi-folder-open' : 'mdi-folder'"
+            <v-icon dense
+              v-text="i == selectedFolder ? 'fa-folder-open' : 'fa-folder'"
               :color="item.color"
             ></v-icon>
           </v-list-item-icon>
@@ -65,7 +68,7 @@
           <v-menu offset-y offset-x>
             <template v-slot:activator="{ on }">
               <v-btn icon small v-on="on" v-on:click.prevent>
-                <v-icon>mdi-dots-vertical</v-icon>
+                <v-icon small>fa-ellipsis-vertical</v-icon>
               </v-btn>
             </template>
             <v-list>
@@ -104,7 +107,7 @@
                         color="primary"
                         text
                         @click.native="
-                          renameFolder(i, editFolderValue)
+                          renameFolder(i, editFolderValue);
                           dialog.value = false
                         "
                       >
@@ -154,7 +157,7 @@
                         color="primary"
                         text
                         @click.native="
-                          recolorFolder(i, editFolderValue)
+                          recolorFolder(i, editFolderValue);
                           dialog.value = false
                         "
                       >
@@ -188,7 +191,7 @@
                         color="red"
                         text
                         @click.native="
-                          deleteFolder(i)
+                          deleteFolder(i);
                           dialog.value = false
                         "
                       >
@@ -205,7 +208,7 @@
         <v-list-item @click="selectedFolder = -2" dense>
           <v-list-item-icon>
             <v-icon color="grey" dense>{{
-              selectedFolder == -2 ? 'mdi-folder-open' : 'mdi-folder'
+              selectedFolder == -2 ? 'fa-folder-open' : 'fa-folder'
             }}</v-icon>
           </v-list-item-icon>
           <v-list-item-title> Sem Categoria </v-list-item-title>
@@ -289,7 +292,7 @@ export default {
           title: 'Ajuste - Grupo 01',
           subtitle: 'Experimento massa',
           lastChanged: '2 hours ago',
-          folders: [''],
+          folders: [],
           type: 'Ajuste',
           url: '/',
         },
