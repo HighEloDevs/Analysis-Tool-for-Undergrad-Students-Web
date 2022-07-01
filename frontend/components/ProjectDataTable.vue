@@ -6,8 +6,11 @@
     style="border-radius: 0px; background: transparent"
     sort-by="Último acesso"
     color="blue"
+	item-key="title"
+	v-model="selectedProjects"
     disable-pagination
     hide-default-footer
+	show-select
   >
     <template v-slot:top>
       <v-dialog v-model="dialogDelete" max-width="500px">
@@ -31,12 +34,15 @@
       <v-text-field
         class="pa-3"
         label="Procurar projetos"
-        prepend-inner-icon="fa-magnifying-glass"
         outlined
         dense
         hide-details
         v-model="search"
-      ></v-text-field>
+      >
+        <template v-slot:prepend-inner>
+          <v-icon class="mt-1 mr-2" small>fa-magnifying-glass</v-icon>
+        </template>
+      </v-text-field>
     </template>
 
     <template v-slot:item.title="{ item }">
@@ -54,24 +60,55 @@
     </template>
 
     <template v-slot:item.actions="{ item }">
-      <v-icon small class="ml-2" @click="deleteItem(item)"> fa-delete </v-icon>
+      <v-icon small class="ml-2 red--text lighten-3" @click="deleteItem(item)"> fa-trash </v-icon>
     </template>
 
-    <template v-slot:item.folders="{ item }">
+    <template v-slot:item.folders="{ item, value }">
       <v-container class="d-flex ma-0 pa-0 align-center" max-width="100px">
-        <v-row>
-          <v-col xl="6">
-            <v-chip
-              v-for="folder in item.folders"
-              :key="folder"
-              :color="getColor(folder)"
-              class="font-weight-medium grey--text text--lighten-3"
-              small
-            >
-              {{ folder }}
-            </v-chip>
-          </v-col>
-        </v-row>
+        <v-chip-group column>
+          <v-chip
+            v-for="folder, index in item.folders"
+            :key="index"
+            :color="getColor(folder)"
+            class="font-weight-medium grey--text text--lighten-3"
+            small
+          >
+            {{ folder }}
+          </v-chip>
+
+          <!-- Add to folder dialog -->
+          <v-dialog
+            v-model="addFolderDialog[items.indexOf(item)]"
+            scrollable
+            max-width="400px"
+            transition="dialog-transition"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-chip
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon x-small>fa-plus</v-icon>
+              </v-chip>
+            </template>
+
+            <template v-slot:default="dialog">
+              <v-card>
+                <v-card-title primary-title>
+                  Escolha as pastas
+                </v-card-title>
+                <v-card-text>
+                  <v-checkbox v-for="f in folders" :key="f.text" :value="f.text" :label="f.text" v-model="item.folders"></v-checkbox>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="success" text @click.native="dialog.value = false">Salvar</v-btn>
+                </v-card-actions>
+              </v-card>
+            </template>
+          </v-dialog>
+        </v-chip-group>
       </v-container>
     </template>
 
@@ -85,9 +122,11 @@
 export default {
   props: ['headers', 'items', 'folders', 'deleteMessage', 'emptyMessage'],
   data: () => ({
+	addFolderDialog: [],
     dialog: false,
     dialogDelete: false,
     search: '',
+	selectedProjects: []
   }),
 
   watch: {

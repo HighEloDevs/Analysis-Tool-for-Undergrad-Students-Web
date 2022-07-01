@@ -1,5 +1,5 @@
 <template>
-  <v-container class="ma-3">
+  <v-container class="ma-0 pa-0">
     <!-- New folder dialog -->
     <v-dialog v-model="newFolderDialog" max-width="300px">
       <v-card>
@@ -9,10 +9,11 @@
         <v-card-text>
           <v-container class="d-inline align-center justify-center flex-column">
             <v-text-field
+              :rules="required"
               v-model="newFolderName"
               label="Nome da pasta"
-              rules=""
               maxlength="25"
+              required
               counter
             ></v-text-field>
           </v-container>
@@ -60,6 +61,7 @@
         >
           <v-list-item-icon>
             <v-icon dense
+              class="fa-thin"
               v-text="i == selectedFolder ? 'fa-folder-open' : 'fa-folder'"
               :color="item.color"
             ></v-icon>
@@ -232,6 +234,7 @@ export default {
       newFolderDialog: false,
       renameFolderDialog: false,
       selectedFolder: -1,
+      required: [(v) => !!v || "O nome é obrigatório!"],
       headers: [
         {
           text: 'Título',
@@ -258,34 +261,17 @@ export default {
       folders: [
         {
           text: 'Lab. 01',
-          color: '#0f0',
-        },
-        {
-          text: 'histograma',
-          color: '#f00',
-        },
-        {
-          text: 'Plots',
-          color: '#00f',
+          color: 'rgb(106, 27, 154)',
         },
       ],
 
       projects: [
         {
-          src: '',
           title: 'Histograma - Lab. IV',
           subtitle: 'Cálculo da gravidade',
           lastChanged: '1 hour ago',
-          folders: ['histograma'],
+          folders: ["Lab. 01"],
           type: 'Histograma',
-          url: '/',
-        },
-        {
-          title: 'Ajuste - Grupo 01',
-          subtitle: 'Experimento massa',
-          lastChanged: '2 hours ago',
-          folders: ['histograma'],
-          type: 'Ajuste',
           url: '/',
         },
         {
@@ -297,18 +283,26 @@ export default {
           url: '/',
         },
         {
-          title: 'Ajuste - Grupo 01',
+          title: 'Ajuste - Grupo 02',
           subtitle: 'Experimento massa',
           lastChanged: '2 hours ago',
-          folders: ['Lab. 01'],
+          folders: [],
           type: 'Ajuste',
           url: '/',
         },
         {
-          title: 'Ajuste - Grupo 01',
+          title: 'Ajuste - Grupo 03',
           subtitle: 'Experimento massa',
           lastChanged: '2 hours ago',
-          folders: ['Teste', 'histograma'],
+          folders: [],
+          type: 'Ajuste',
+          url: '/',
+        },
+        {
+          title: 'Ajuste - Grupo 04',
+          subtitle: 'Experimento massa',
+          lastChanged: '2 hours ago',
+          folders: [],
           type: 'Histograma',
           url: '/',
         },
@@ -357,7 +351,6 @@ export default {
     },
 
     recolorFolder(index, value) {
-      console.log(value)
       this.folders[index].color = value
       this.editFolderValue = ''
     },
@@ -376,8 +369,12 @@ export default {
   },
 
   watch: {
-    folders(newList) {
-      console.log('folders changed!')
+    folders: {
+      deep: true,
+
+      handler(newList) {
+        console.log("Folders changed!")
+      }
     },
 
     projects: {
