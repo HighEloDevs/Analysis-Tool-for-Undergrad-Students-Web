@@ -250,16 +250,6 @@ export default {
           this.alertType = 'error'
           this.alert = true
         })
-      //   this.$axios
-      //     .post('/auth/login', this.loginData)
-      //     .then((r) => {
-      //       console.log(r)
-      //     })
-      //     .catch((e) => {
-      //       this.alert = true
-      //       this.alertMessage = e.response.data.message
-      //       this.alertType = 'error'
-      //     })
     },
 
     async signup() {

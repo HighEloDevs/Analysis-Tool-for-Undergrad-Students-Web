@@ -1,6 +1,9 @@
 <template>
   <v-app dark>
     <v-app-bar v-if="$auth.loggedIn" app clipped-left color="primary" flat>
+      <v-btn @click="toggleDarkMode" color="white" icon>
+        <v-icon>{{ $vuetify.theme.dark ? 'fa-moon' : 'fa-sun' }}</v-icon>
+      </v-btn>
       <v-list-item two-line>
         <v-list-item-content>
           <v-list-item-title class="grey--text text--lighten-2">
@@ -34,7 +37,7 @@
       <v-btn
         text
         small
-        class="red--text font-weight-bold"
+        class="white--text font-weight-bold"
         @click="$auth.logout('local')"
       >
         Sair
@@ -57,7 +60,16 @@ export default {
   },
 
   methods: {
-    logout() {},
+    toggleDarkMode() {
+      this.$vuetify.theme.dark = !this.$vuetify.theme.dark
+      localStorage.setItem('dark_theme', this.$vuetify.theme.dark.toString())
+    },
+  },
+
+  mounted() {
+    this.$vuetify.theme.dark = localStorage.getItem('dark_theme') === 'true'
   },
 }
 </script>
+
+<style></style>

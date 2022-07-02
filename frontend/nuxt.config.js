@@ -16,7 +16,10 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Unica+One&display=swap'},
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Unica+One&display=swap',
+      },
     ],
   },
 
@@ -24,7 +27,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['~/plugins/axios',],
+  plugins: ['~/plugins/axios'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -53,10 +56,10 @@ export default {
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: false,
+      dark: true,
       themes: {
         dark: {
-          primary: colors.blue.darken2,
+          primary: colors.teal.darken2,
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
@@ -67,8 +70,8 @@ export default {
       },
     },
     defaultAssets: {
-      icons: 'fa'
-    }
+      icons: 'fa',
+    },
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
@@ -81,24 +84,28 @@ export default {
       local: {
         token: {
           property: 'access',
-          global: true
+          global: true,
         },
         user: {
-          property: "user"
+          property: 'user',
         },
         endpoints: {
-          login: {url: '/auth/login/', method: 'post', propertyName: 'access'},
-          logout: {url: '/auth/logout/', method: 'post'},
-          user: {url: '/auth/user/', method: 'get'},
-        }
-      }
+          login: {
+            url: '/auth/login/',
+            method: 'post',
+            propertyName: 'access',
+          },
+          logout: { url: '/auth/logout/', method: 'post' },
+          user: { url: '/auth/user/', method: 'get' },
+        },
+      },
     },
 
     redirect: {
       login: '/login',
       logout: '/login',
       callback: '/login',
-      home: '/'
-    }
-  }
+      home: '/',
+    },
+  },
 }

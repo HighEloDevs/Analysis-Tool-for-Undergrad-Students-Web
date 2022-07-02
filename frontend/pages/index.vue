@@ -36,7 +36,13 @@
     </v-dialog>
 
     <!-- Navigation Drawer -->
-    <v-navigation-drawer app permanent clipped width="300px">
+    <v-navigation-drawer
+      app
+      permanent
+      clipped
+      width="300px"
+      color="transparent"
+    >
       <v-list dense>
         <v-list-item>
           <v-menu offset-y>
