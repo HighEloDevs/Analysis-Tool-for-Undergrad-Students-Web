@@ -3,10 +3,10 @@
     <v-dialog
       v-model="stepperDialog"
       persistent
-      max-width="600px"
+      max-width="550px"
       transition="dialog-transition"
     >
-      <NewPlotStepper />
+      <NewPlotStepper @finishStepper="onFinishStepper" />
     </v-dialog>
   </v-container>
 </template>
@@ -16,8 +16,16 @@ export default {
   name: 'PlotPage',
   data() {
     return {
+      data: [],
       stepperDialog: true,
     }
+  },
+
+  methods: {
+    onFinishStepper(data) {
+      this.stepperDialog = false
+      this.data.push(data)
+    },
   },
 }
 </script>

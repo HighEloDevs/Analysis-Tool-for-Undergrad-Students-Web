@@ -41,7 +41,7 @@
       v-if="uploadedFiles.length > 0"
       :items="uploadedFiles"
       style="width: 100%"
-      height="200"
+      max-height="200"
       item-height="50"
     >
       <template v-slot:default="{ item }">
@@ -61,7 +61,7 @@
       </template>
     </v-virtual-scroll>
     <v-btn
-      v-if="uploadedFiles.length != 0"
+      v-if="uploadedFiles.length != 0 && multiple"
       class="primary--text"
       @click="$refs.fileInput.click()"
       text
