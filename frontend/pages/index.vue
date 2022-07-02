@@ -15,7 +15,8 @@
               maxlength="25"
               required
               counter
-            ></v-text-field>
+            >
+            </v-text-field>
           </v-container>
         </v-card-text>
         <v-card-actions>
@@ -38,14 +39,31 @@
     <v-navigation-drawer app permanent clipped width="300px">
       <v-list dense>
         <v-list-item>
-          <v-btn color="primary" block rounded elevation-5>Novo Projeto</v-btn>
+          <v-menu offset-y>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn v-on="on" v-bind="attrs" color="primary" block>
+                Novo Projeto
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item
+                v-for="(item, index) in projectTypes"
+                :key="index"
+                :to="item.url"
+              >
+                <v-list-item-icon>
+                  <v-icon>{{ item.icon }}</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>{{ item.name }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </v-list-item>
         <v-list-item @click="selectedFolder = -1" dense>
           <v-list-item-title> Todos os projetos </v-list-item-title>
         </v-list-item>
         <v-divider></v-divider>
         <v-subheader>Pastas</v-subheader>
-
         <v-list-item dense @click="newFolderDialog = !newFolderDialog">
           <v-list-item-icon>
             <v-icon dense>fa-plus</v-icon>
@@ -60,11 +78,13 @@
           dense
         >
           <v-list-item-icon>
-            <v-icon dense
+            <v-icon
+              dense
               class="fa-thin"
               v-text="i == selectedFolder ? 'fa-folder-open' : 'fa-folder'"
               :color="item.color"
-            ></v-icon>
+            >
+            </v-icon>
           </v-list-item-icon>
           <v-list-item-title> {{ item.text }} </v-list-item-title>
           <v-menu offset-y offset-x>
@@ -93,7 +113,8 @@
                         <v-text-field
                           v-model="editFolderValue"
                           label="Nome da pasta"
-                        ></v-text-field>
+                        >
+                        </v-text-field>
                       </v-container>
                     </v-card-text>
                     <v-card-actions>
@@ -109,7 +130,7 @@
                         color="primary"
                         text
                         @click.native="
-                          renameFolder(i, editFolderValue);
+                          renameFolder(i, editFolderValue)
                           dialog.value = false
                         "
                       >
@@ -143,7 +164,8 @@
                           hide-sliders
                           show-swatches
                           swatches-max-height="150px"
-                        ></v-color-picker>
+                        >
+                        </v-color-picker>
                       </v-container>
                     </v-card-text>
                     <v-card-actions>
@@ -159,7 +181,7 @@
                         color="primary"
                         text
                         @click.native="
-                          recolorFolder(i, editFolderValue);
+                          recolorFolder(i, editFolderValue)
                           dialog.value = false
                         "
                       >
@@ -193,7 +215,7 @@
                         color="red"
                         text
                         @click.native="
-                          deleteFolder(i);
+                          deleteFolder(i)
                           dialog.value = false
                         "
                       >
@@ -226,15 +248,16 @@
 <script>
 export default {
   name: 'IndexPage',
-
   data() {
     return {
       editFolderValue: '',
       newFolderName: '',
+      newPlotDialog: false,
       newFolderDialog: false,
       renameFolderDialog: false,
       selectedFolder: -1,
-      required: [(v) => !!v || "O nome é obrigatório!"],
+      step: 1,
+      required: [(v) => !!v || 'O nome é obrigatório!'],
       headers: [
         {
           text: 'Título',
@@ -257,59 +280,22 @@ export default {
         { text: 'Último acesso', value: 'lastChanged', width: '150px' },
         { text: 'Ações', value: 'actions', width: '30px' },
       ],
-
-      folders: [
+      folders: [],
+      projects: [],
+      projectTypes: [
         {
-          text: 'Lab. 01',
-          color: 'rgb(106, 27, 154)',
-        },
-      ],
-
-      projects: [
-        {
-          title: 'Histograma - Lab. IV',
-          subtitle: 'Cálculo da gravidade',
-          lastChanged: '1 hour ago',
-          folders: ["Lab. 01"],
-          type: 'Histograma',
-          url: '/',
+          name: 'Ajustes',
+          icon: 'fa-chart-line',
+          url: '/plot/',
         },
         {
-          title: 'Ajuste - Grupo 01',
-          subtitle: 'Experimento massa',
-          lastChanged: '2 hours ago',
-          folders: [],
-          type: 'Ajuste',
-          url: '/',
-        },
-        {
-          title: 'Ajuste - Grupo 02',
-          subtitle: 'Experimento massa',
-          lastChanged: '2 hours ago',
-          folders: [],
-          type: 'Ajuste',
-          url: '/',
-        },
-        {
-          title: 'Ajuste - Grupo 03',
-          subtitle: 'Experimento massa',
-          lastChanged: '2 hours ago',
-          folders: [],
-          type: 'Ajuste',
-          url: '/',
-        },
-        {
-          title: 'Ajuste - Grupo 04',
-          subtitle: 'Experimento massa',
-          lastChanged: '2 hours ago',
-          folders: [],
-          type: 'Histograma',
+          name: 'Histogramas',
+          icon: 'fa-chart-column',
           url: '/',
         },
       ],
     }
   },
-
   methods: {
     debug() {
       console.log('debug!')
@@ -338,7 +324,6 @@ export default {
       // Saving old name
       let oldName = this.folders[index]['text']
       this.folders[index]['text'] = value
-
       // Renaming all projects with this folder
       this.projects.forEach((proj) => {
         let valueIndex = proj.folders.indexOf(oldName)
@@ -346,7 +331,6 @@ export default {
           proj.folders.splice(valueIndex, 1, value)
         }
       })
-
       this.editFolderValue = ''
     },
 
@@ -358,7 +342,6 @@ export default {
     deleteFolder(index) {
       let folderName = this.folders[index].text
       this.folders.splice(index, 1)
-
       this.projects.forEach((proj) => {
         let valueIndex = proj.folders.indexOf(folderName)
         if (valueIndex != -1) {
@@ -367,19 +350,15 @@ export default {
       })
     },
   },
-
   watch: {
     folders: {
       deep: true,
-
       handler(newList) {
-        console.log("Folders changed!")
-      }
+        console.log('Folders changed!')
+      },
     },
-
     projects: {
       deep: true,
-
       handler(newList) {
         console.log('Projects changed!')
       },
