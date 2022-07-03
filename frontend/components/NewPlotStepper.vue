@@ -8,7 +8,7 @@
       edit-icon="fa-pen"
       editable
     >
-      Quais serão os dados?
+      <span> Quais serão os dados? </span>
       <small>Arquivo contendo os dados do projeto</small>
     </v-stepper-step>
     <v-stepper-content step="1">
@@ -37,7 +37,7 @@
         outlined
         dense
       ></v-text-field>
-      <v-list>
+      <v-list color="transparent">
         <v-list-item v-if="params.length">
           <v-list-item-title class="grey--text text--darken-1"
             >Parâmetro</v-list-item-title
@@ -84,7 +84,7 @@
         }}</v-list-item-subtitle>
       </v-list-item>
       <v-btn
-        color="success"
+        color="primary"
         class="mt-4"
         @click="emitPlot"
         :disabled="!uploadedFiles.length"

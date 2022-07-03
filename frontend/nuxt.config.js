@@ -27,7 +27,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['~/plugins/axios'],
+  plugins: ['~/plugins/axios', '~/plugins/darkModeSelect'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -43,6 +43,7 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/auth',
+    ['cookie-universal-nuxt', { alias: 'cookiz' }],
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -77,7 +78,7 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 
-  router: { middleware: ['auth'] },
+  router: { middleware: ['auth', 'darkModeSelect'] },
 
   auth: {
     strategies: {
@@ -85,6 +86,7 @@ export default {
         token: {
           property: 'access',
           global: true,
+          maxAge: 43200, // 12h
         },
         user: {
           property: 'user',
@@ -108,4 +110,7 @@ export default {
       home: '/',
     },
   },
+
+  ssr: true,
+  target: 'server',
 }

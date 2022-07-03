@@ -62,12 +62,8 @@ export default {
   methods: {
     toggleDarkMode() {
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark
-      localStorage.setItem('dark_theme', this.$vuetify.theme.dark.toString())
+      this.$cookiz.set('darkMode', this.$vuetify.theme.dark)
     },
-  },
-
-  mounted() {
-    this.$vuetify.theme.dark = localStorage.getItem('dark_theme') === 'true'
   },
 }
 </script>

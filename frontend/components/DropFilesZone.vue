@@ -20,6 +20,7 @@
       @mouseover="mouseOver = true"
       @mouseleave="mouseOver = false"
       @click="$refs.fileInput.click()"
+      color="transparent"
       class="d-flex flex-column justify-center align-center py-4"
       flat
     >

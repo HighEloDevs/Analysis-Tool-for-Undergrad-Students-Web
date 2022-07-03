@@ -1,7 +1,8 @@
 <template>
   <v-container class="d-flex" fluid fill-height ma-0 pa-0>
     <div
-      class="fill-height primary d-none d-md-flex flex-column background"
+      class="fill-height primary d-none d-md-flex flex-column"
+      :class="$vuetify.theme.dark ? 'background-dark' : 'background-light'"
       style="flex-grow: 3"
     >
       <v-app-bar color="transparent" flat>
@@ -32,6 +33,21 @@
           class="flex-column justify-center black--text"
           primary-title
         >
+          <img
+            v-if="$vuetify.theme.dark"
+            src="~/static/logos/highelo-logo-vert-white.png"
+            alt="High Elo Logo"
+            width="150px"
+            class="mb-3"
+          />
+          <img
+            v-else
+            src="~/static/logos/highelo-logo-vert-black.png"
+            alt="High Elo Logo"
+            width="150px"
+            class="mb-3"
+          />
+
           <span :class="{ 'white--text': $vuetify.theme.dark }">
             Seja bem-vindo!
           </span>
@@ -80,6 +96,8 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
+
 export default {
   name: 'LoginPage',
   data() {
@@ -96,6 +114,10 @@ export default {
   },
 
   methods: {
+    ...mapMutations({
+      toggleMode: 'toggleDarkMode',
+    }),
+
     login() {
       if (!this.$refs.loginForm.validate()) return
       this.$auth.loginWith('local', { data: this.data }).catch(() => {
@@ -106,7 +128,7 @@ export default {
 
     toggleDarkMode() {
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark
-      localStorage.setItem('dark_theme', this.$vuetify.theme.dark.toString())
+      this.$cookiz.set('darkMode', this.$vuetify.theme.dark)
     },
   },
   watch: {
@@ -122,8 +144,14 @@ export default {
 </script>
 
 <style scoped>
-.background {
-  background-image: url('~/static/background.png');
+.background-light {
+  background-image: url('https://images.alphacoders.com/101/1018102.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.background-dark {
+  background-image: url('https://images8.alphacoders.com/101/1018165.jpg');
   background-size: cover;
   background-position: center;
 }
