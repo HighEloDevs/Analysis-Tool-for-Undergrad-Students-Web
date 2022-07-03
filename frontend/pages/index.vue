@@ -104,7 +104,7 @@
               <v-dialog max-width="300px">
                 <template v-slot:activator="{ on }">
                   <v-list-item v-on="on">
-                    <v-list-item-title>Renomear</v-list-item-title>
+                    <v-list-item-title>Renomear </v-list-item-title>
                   </v-list-item>
                 </template>
                 <template v-slot:default="dialog">
@@ -151,7 +151,7 @@
               <v-dialog max-width="300px">
                 <template v-slot:activator="{ on }">
                   <v-list-item v-on="on">
-                    <v-list-item-title>Alterar cor</v-list-item-title>
+                    <v-list-item-title>Alterar cor </v-list-item-title>
                   </v-list-item>
                 </template>
                 <template v-slot:default="dialog">
@@ -202,7 +202,7 @@
               <v-dialog max-width="400px">
                 <template v-slot:activator="{ on }">
                   <v-list-item v-on="on" class="red--text">
-                    <v-list-item-title>Deletar</v-list-item-title>
+                    <v-list-item-title>Deletar </v-list-item-title>
                   </v-list-item>
                 </template>
                 <template v-slot:default="dialog">
@@ -303,10 +303,6 @@ export default {
     }
   },
   methods: {
-    debug() {
-      console.log('debug!')
-    },
-
     filterByFolder(value) {
       if (this.selectedFolder === -1 || this.selectedFolder === undefined) {
         return true
@@ -330,6 +326,7 @@ export default {
       // Saving old name
       let oldName = this.folders[index]['text']
       this.folders[index]['text'] = value
+
       // Renaming all projects with this folder
       this.projects.forEach((proj) => {
         let valueIndex = proj.folders.indexOf(oldName)

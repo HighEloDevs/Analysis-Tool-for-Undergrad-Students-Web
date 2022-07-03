@@ -1,5 +1,6 @@
 <template>
   <v-container class="d-flex" fluid fill-height ma-0 pa-0>
+    <!-- Left Panel -->
     <div
       class="fill-height primary d-none d-md-flex flex-column"
       :class="$vuetify.theme.dark ? 'background-dark' : 'background-light'"
@@ -12,9 +13,7 @@
         <v-btn color="white" text>Sobre</v-btn>
         <v-btn color="white" text>Contato</v-btn>
       </v-app-bar>
-
       <v-spacer vertical></v-spacer>
-
       <v-footer color="transparent" height="65px">
         <img
           src="~/static/logos/highelo-logo-full-white.png"
@@ -24,6 +23,8 @@
         />
       </v-footer>
     </div>
+
+    <!-- Right Panel -->
     <div
       class="d-flex fill-height justify-center align-center"
       style="flex-grow: 1"

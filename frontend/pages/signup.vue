@@ -6,7 +6,7 @@
     class="d-flex flex-column align-center justify-center"
   >
     <v-alert type="warning" :value="true" width="400px">
-      Por enquanto só estamos aceitando o cadastro de alunos da
+      Por enquanto, só estamos aceitando o cadastro de alunos da
       <strong>Universidade de São Paulo</strong>
     </v-alert>
     <v-alert type="error" :value="showAlert" width="400px">
@@ -86,6 +86,17 @@
               >
               </v-icon> </template
           ></v-text-field>
+          <div class="d-flex flex-column mb-4">
+            <span class="grey--text subtitle-2">
+              A senha deve conter, pelo menos:
+            </span>
+            <span class="grey--text subtitle-2"> - Uma letra maiúscula; </span>
+            <span class="grey--text subtitle-2"> - Um número; </span>
+            <span class="grey--text subtitle-2"> - 8 caracteres. </span>
+            <span class="grey--text subtitle-2">
+              - Um caracter especial (ex.: !@#$%&*).
+            </span>
+          </div>
           <v-btn color="primary" type="submit" block>Cadastrar</v-btn>
           <div class="d-flex justify-center mt-3">
             <a href="/login" class="text-decoration-none">
