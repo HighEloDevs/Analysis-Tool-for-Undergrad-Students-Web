@@ -98,7 +98,7 @@
                     dense
                   ></v-text-field>
 
-                  <header class="">Parâmetros à serem ajustados</header>
+                  <header class="">Valores iniciais dos parâmetros</header>
                   <v-row>
                     <v-col
                       v-for="param in d.params"
@@ -304,14 +304,14 @@
                   </v-card> -->
 
                   <!-- Data -->
-                  <v-card class="mt-5" flat>
+                  <DataTableEditable class="mt-6" :items="d.data" />
+                  <!-- <v-card class="mt-5" flat>
                     <v-card-title class="pa-0">
                       Dados a serem ajustados
                     </v-card-title>
                     <v-card-text class="">
-                      <DataTableEditable :items="d.data" />
                     </v-card-text>
-                  </v-card>
+                  </v-card> -->
                 </v-card-text>
               </v-card>
             </v-tab-item>
