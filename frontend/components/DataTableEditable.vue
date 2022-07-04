@@ -261,6 +261,7 @@ export default {
         y: 0,
         sy: 0,
         sx: 0,
+        use: true,
       })
     },
 
