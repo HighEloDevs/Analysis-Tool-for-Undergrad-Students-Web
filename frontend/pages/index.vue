@@ -1,5 +1,21 @@
 <template>
   <v-container class="ma-0 pa-0" style="max-width: 100%">
+    <!-- App Bar -->
+    <v-app-bar color="primary" app clipped-left flat dense>
+      <v-btn @click="toggleDarkMode" color="white" icon>
+        <v-icon small>{{ $vuetify.theme.dark ? 'fa-moon' : 'fa-sun' }}</v-icon>
+      </v-btn>
+      <v-spacer></v-spacer>
+      <v-btn
+        text
+        small
+        class="white--text font-weight-bold"
+        @click="$auth.logout('local')"
+      >
+        Sair
+      </v-btn>
+    </v-app-bar>
+
     <!-- New folder dialog -->
     <v-dialog v-model="newFolderDialog" max-width="300px">
       <v-card>
@@ -287,7 +303,16 @@ export default {
         { text: 'Ações', value: 'actions', width: '30px' },
       ],
       folders: [],
-      projects: [],
+      projects: [
+        {
+          title: 'Projeto 1',
+          subtitle: 'Subtítulo do projeto 1',
+          folders: [],
+          type: 'Projeto',
+          lastChanged: '01/01/2020',
+          actions: '',
+        },
+      ],
       projectTypes: [
         {
           name: 'Ajustes',
@@ -303,6 +328,11 @@ export default {
     }
   },
   methods: {
+    toggleDarkMode() {
+      this.$vuetify.theme.dark = !this.$vuetify.theme.dark
+      this.$cookiz.set('darkMode', this.$vuetify.theme.dark)
+    },
+
     filterByFolder(value) {
       if (this.selectedFolder === -1 || this.selectedFolder === undefined) {
         return true
