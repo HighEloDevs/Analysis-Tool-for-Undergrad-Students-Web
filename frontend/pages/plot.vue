@@ -429,7 +429,7 @@ export default {
         let data = e.target.result
         let type = file.name.split('.').pop()
         this.$axios
-          .post('/api/load', {
+          .post('/parsers/simple_parser', {
             data: data,
             type: type,
           })
