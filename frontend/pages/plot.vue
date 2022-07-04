@@ -51,9 +51,12 @@
                     class="elevation-0 flex-grow-1"
                     style="height: auto"
                     color="transparent"
+                    @click="addPlot"
                     tile
                   >
-                    <v-icon class="primary--text" dense> fa-plus </v-icon>
+                    <v-icon class="primary--text" v-show="data.length" dense>
+                      fa-plus
+                    </v-icon>
                   </v-btn>
                 </template>
                 Adicionar um Plot
@@ -90,6 +93,7 @@
                 </v-card-title>
                 <v-card-text class="px-6">
                   <v-text-field
+                    @change="onFitFunctionChange(i, d.fitFunction)"
                     v-model="d.fitFunction"
                     label="Função de ajuste"
                     hint="Função que será ajustada"
@@ -98,7 +102,9 @@
                     dense
                   ></v-text-field>
 
-                  <header class="">Valores iniciais dos parâmetros</header>
+                  <header v-show="d.params.length">
+                    Valores iniciais dos parâmetros
+                  </header>
                   <v-row>
                     <v-col
                       v-for="param in d.params"
@@ -304,7 +310,15 @@
                   </v-card> -->
 
                   <!-- Data -->
-                  <DataTableEditable class="mt-6" :items="d.data" />
+                  <v-file-input
+                    v-model="d.file"
+                    class="mt-7"
+                    label="Arquivo de dados"
+                    @change="onFileChange(i, d.file)"
+                    outlined
+                    dense
+                  ></v-file-input>
+                  <DataTableEditable :items="d.data" />
                   <!-- <v-card class="mt-5" flat>
                     <v-card-title class="pa-0">
                       Dados a serem ajustados
@@ -332,235 +346,19 @@ export default {
   name: 'PlotPage',
   data() {
     return {
-      data: [
-        {
-          fitFunction: 'a*x + b',
-          file: 'file.csv',
-          data: [
-            {
-              x: 0,
-              y: 1,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 1,
-              y: 2,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 2,
-              y: 3,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-            {
-              x: 3,
-              y: 4,
-              sy: 1,
-              sx: 0,
-            },
-          ],
-          params: [
-            {
-              name: 'a',
-              value: '1',
-            },
-            {
-              name: 'b',
-              value: '2',
-            },
-            {
-              name: 'c',
-              value: '2',
-            },
-          ],
-          options: {
-            fitRange: [0, 3],
-            useSx: true,
-            useSy: true,
-            fit: true,
-            connectDots: false,
-          },
-          // This is the data returned from backend
-          fitData: {
-            params: [
-              {
-                name: 'a',
-                value: '1',
-                sigma: '1',
-              },
-              {
-                name: 'b',
-                value: '2',
-                sigma: '1',
-              },
-            ],
-            corrMatrix: [
-              [1, 0, 2, 3],
-              [0, 1, 2, 3.2],
-              [2, 2, 4, 6],
-              [3, 3, 6, 9],
-            ],
-            covMatrix: [
-              [1, 0, 2, 3],
-              [0, 1, 2, 3.2],
-              [2, 2, 4, 6],
-              [3, 3, 6, 9],
-            ],
-            chi2: 23,
-            sumRes: 1,
-            ngl: 32,
-          },
-        },
-      ],
+      data: [],
       projectData: {
         title: 'Título do projeto',
         subtitle: 'Subtitulo',
       },
-      stepperDialog: false,
+      stepperDialog: true,
     }
   },
   methods: {
+    /**
+     * Convert and ndarray to a LaTeX matrix
+     * @param {Array} arr
+     */
     arr2matrix(arr) {
       let output = []
       arr.forEach((row) => {
@@ -569,9 +367,108 @@ export default {
       return '\\begin{bmatrix} ' + output.join(' \\\\ ') + ' \\end{bmatrix}'
     },
 
+    /**
+     * Triggered when the New Plot Stepper is finished
+     * @param {Object} data The data from the stepper
+     */
     onFinishStepper(data) {
       this.stepperDialog = false
-      this.data.push(data)
+      let arr = this.loadData(data.file)
+      this.addPlot()
+      this.data[this.data.length - 1]['data'] = arr
+      this.data[this.data.length - 1]['params'] = data.params
+      this.data[this.data.length - 1]['fitFunction'] = data.fitFunction
+      this.data[this.data.length - 1]['file'] = data.file
+      this.fit(-1)
+    },
+
+    /**
+     * Triggered when the fit function changes
+     * @param {Integer} projectId The project id
+     * @param {String} newValue
+     */
+    onFitFunctionChange(plotIndex, newValue) {
+      // Calls backend to parse the function
+      this.fit(plotIndex)
+    },
+
+    onFileChange(plotIndex, newValue) {
+      if (newValue === null) {
+        this.data[plotIndex]['data'] = []
+      } else {
+        this.data[plotIndex]['data'] = this.loadData(newValue)
+      }
+    },
+
+    /**
+     * Fits the function to data
+     * @param {Integer} plotIndex The index of the plot
+     */
+    fit(plotIndex) {
+      // Calls backend to fit the data
+      let data = this.data[plotIndex]
+      this.$axios
+        .post('/api/fit', data)
+        .then((response) => {
+          // Update the data
+          this.data[plotIndex].fitData = response.data
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+
+    /**
+     * Reads the file from any format and returns a array
+     * @param {File} file
+     */
+    loadData(file) {
+      // Calls backend to load the data
+      let fr = new FileReader()
+      fr.onload = (e) => {
+        let data = e.target.result
+        let type = file.name.split('.').pop()
+        this.$axios
+          .post('/api/load', {
+            data: data,
+            type: type,
+          })
+          .then((res) => {
+            return res.data
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      }
+      fr.readAsText(file)
+    },
+
+    /**
+     * Adds a new empty plot to the data
+     */
+    addPlot() {
+      this.data.push({
+        fitFunction: '',
+        file: null,
+        params: [],
+        data: [],
+        options: {
+          fitRange: [0, 1],
+          useSx: true,
+          useSy: true,
+          fit: true,
+          connectDots: false,
+        },
+        // This is the data returned from backend
+        fitData: {
+          params: [],
+          corrMatrix: [],
+          covMatrix: [],
+          chi2: 0,
+          sumRes: 0,
+          ngl: 0,
+        },
+      })
     },
   },
 }
