@@ -58,12 +58,12 @@
       </v-card>
     </v-dialog>
 
-    <v-data-table :headers="headers" :items="items" dense>
+    <v-data-table :headers="headers" :items="items">
       <template #top>
         <v-toolbar color="transparent" dense flat>
           <v-tooltip bottom>
             <template #activator="{ on, attrs }">
-              <v-btn v-on="on" v-bind="attrs" @click="addLine" dense icon>
+              <v-btn v-on="on" v-bind="attrs" @click="addRow" dense icon>
                 <v-icon small>fa-plus</v-icon>
               </v-btn>
             </template>
@@ -85,13 +85,16 @@
           </v-tooltip>
         </v-toolbar>
       </template>
+      <template #item.use="props">
+        <v-checkbox
+          v-model="props.item.use"
+          class="ma-0"
+          hide-details
+          dense
+        ></v-checkbox>
+      </template>
       <template #item.x="props">
-        <v-edit-dialog
-          :return-value.sync="props.item.x"
-          @save="save"
-          @cancel="cancel"
-          @open="open"
-        >
+        <v-edit-dialog :return-value.sync="props.item.x" @save="onSave">
           {{ props.item.x }}
           <template #input>
             <v-text-field
@@ -105,12 +108,7 @@
         </v-edit-dialog>
       </template>
       <template #item.y="props">
-        <v-edit-dialog
-          :return-value.sync="props.item.y"
-          @save="save"
-          @cancel="cancel"
-          @open="open"
-        >
+        <v-edit-dialog :return-value.sync="props.item.y" @save="onSave">
           {{ props.item.y }}
           <template #input>
             <v-text-field
@@ -124,12 +122,7 @@
         </v-edit-dialog>
       </template>
       <template #item.sy="props">
-        <v-edit-dialog
-          :return-value.sync="props.item.sy"
-          @save="save"
-          @cancel="cancel"
-          @open="open"
-        >
+        <v-edit-dialog :return-value.sync="props.item.sy" @save="onSave">
           {{ props.item.sy }}
           <template #input>
             <v-text-field
@@ -143,12 +136,7 @@
         </v-edit-dialog>
       </template>
       <template #item.sx="props">
-        <v-edit-dialog
-          :return-value.sync="props.item.sx"
-          @save="save"
-          @cancel="cancel"
-          @open="open"
-        >
+        <v-edit-dialog :return-value.sync="props.item.sx" @save="onSave">
           {{ props.item.sx }}
           <template #input>
             <v-text-field
@@ -158,6 +146,23 @@
               single-line
               counter
             ></v-text-field>
+          </template>
+        </v-edit-dialog>
+      </template>
+      <template #item.actions="item">
+        <v-edit-dialog>
+          <v-btn icon small>
+            <v-icon small color="error">fa-trash</v-icon>
+          </v-btn>
+          <template #input>
+            <v-card flat>
+              <v-card-title> Tem certeza? </v-card-title>
+              <v-card-text class="d-flex justify-center">
+                <v-btn @click="deleteRow(item)" color="error" text>
+                  Deletar
+                </v-btn>
+              </v-card-text>
+            </v-card>
           </template>
         </v-edit-dialog>
       </template>
@@ -181,29 +186,21 @@ export default {
       default: () => [],
     },
   },
+
   model: {
     prop: 'items',
     event: 'updateInput',
   },
+
   data() {
     return {
       operationsDialog: false,
-      operation: {
-        text: 'Somar',
-        value: 'sum',
-      },
       operationValue: 0,
       snack: false,
       snackColor: '',
       snackText: '',
       max25chars: (v) => v.length <= 25 || 'Input too long!',
       pagination: {},
-      headers: [
-        { text: 'X', value: 'x' },
-        { text: 'Y', value: 'y' },
-        { text: 'σY', value: 'sy' },
-        { text: 'σX', value: 'sx' },
-      ],
       operations: [
         {
           text: 'Somar',
@@ -230,31 +227,69 @@ export default {
           value: 'switch',
         },
       ],
+      headers: [
+        { text: '', value: 'use', sortable: false, width: '20px' },
+        { text: 'X', value: 'x' },
+        { text: 'Y', value: 'y' },
+        { text: 'σY', value: 'sy' },
+        { text: 'σX', value: 'sx' },
+        {
+          text: 'Ações',
+          value: 'actions',
+          sortable: false,
+          align: 'right',
+          width: '20px',
+        },
+      ],
       columns: [
         { text: 'X', value: 'x' },
         { text: 'Y', value: 'y' },
       ],
+      operation: {
+        text: 'Somar',
+        value: 'sum',
+      },
     }
   },
   methods: {
+    /**
+     * Add a new row to the table
+     */
+    addRow() {
+      this.items.unshift({
+        x: 0,
+        y: 0,
+        sy: 0,
+        sx: 0,
+      })
+    },
+
+    /**
+     * Delete a row from the table
+     */
+    deleteRow(item) {
+      this.items.splice(item.index, 1)
+    },
+
+    /**
+     * Used to create the v-model, emits back the data to the parent component
+     */
     updateInput(value) {
       this.$emit('update', value)
     },
-    save() {
+
+    /**
+     * Triggered when the user changes a value in the table
+     */
+    onSave() {
       this.snack = true
       this.snackColor = 'success'
-      this.snackText = 'Data saved'
+      this.snackText = 'Alteração salva!'
     },
-    cancel() {
-      this.snack = true
-      this.snackColor = 'error'
-      this.snackText = 'Canceled'
-    },
-    open() {
-      this.snack = true
-      this.snackColor = 'info'
-      this.snackText = 'Dialog opened'
-    },
+
+    /**
+     * Applies the selected operation to the whole column
+     */
     applyOperation() {
       if (this.operation.value === 'sum') {
         this.items.forEach((item) => {
@@ -302,23 +337,6 @@ export default {
           this.$set(item, this.columns[1].value, aux)
         })
       }
-    },
-    addLine() {
-      this.items.unshift({
-        x: 0,
-        y: 0,
-        sy: 0,
-        sx: 0,
-      })
-    },
-  },
-
-  watch: {
-    items: {
-      handler(items) {
-        this.updateInput(items)
-      },
-      deep: true,
     },
   },
 }
