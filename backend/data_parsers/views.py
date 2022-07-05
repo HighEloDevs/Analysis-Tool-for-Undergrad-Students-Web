@@ -27,7 +27,6 @@ def simple_parser(request: Request) -> Response:
     type: str = request.data["type"]
     df = None
     input = io.StringIO(data)
-    print(request.data)
     if type == "csv":
         df = pd.read_csv(input, sep=",", header=None)
     elif type == "tsv" or type == "txt":
@@ -37,7 +36,6 @@ def simple_parser(request: Request) -> Response:
     res: list = []
     for column in df.columns:
         for index, x in enumerate(df[column]):
-            print(index, x)
             df[column].iloc[index] = (
                 float(x.replace(",", ".")) if type(x) is str else x
             )
