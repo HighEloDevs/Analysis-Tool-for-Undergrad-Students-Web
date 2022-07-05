@@ -92,7 +92,7 @@
           <a href="/" class="text-decoration-none">Esqueceu a senha?</a>
         </div>
         <v-divider></v-divider>
-        <v-btn color="secondary" class="mt-5" href="/signup" block>
+        <v-btn color="secondary" class="mt-5" href="/auth/signup" block>
           Cadastrar
         </v-btn>
       </v-card>
