@@ -61,16 +61,20 @@
             {{ alertMessage }}
           </v-alert>
           <v-text-field
-            :rules="required"
             v-model="data.username"
             label="Nome de usuário"
             outlined
+            :error-messages="usernameErrors"
+            @input="$v.data.username.$touch()"
+            @blur="$v.data.username.$touch()"
           ></v-text-field>
           <v-text-field
             :type="seePassword ? 'text' : 'password'"
-            :rules="required"
-            v-model="data.password"
             label="Senha"
+            v-model="data.password"
+            :error-messages="passwordErrors"
+            @input="$v.data.password.$touch()"
+            @blur="$v.data.password.$touch()"
             outlined
           >
             <template #append>
@@ -97,10 +101,10 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
-
+import { required } from 'vuelidate/lib/validators'
 export default {
   name: 'LoginPage',
+
   data() {
     return {
       data: {
@@ -110,21 +114,18 @@ export default {
       seePassword: false,
       alertValue: false,
       alertMessage: '',
-      required: [(v) => !!v || 'Campo obrigatório!'],
     }
   },
 
   methods: {
-    ...mapMutations({
-      toggleMode: 'toggleDarkMode',
-    }),
-
     login() {
-      if (!this.$refs.loginForm.validate()) return
-      this.$auth.loginWith('local', { data: this.data }).catch(() => {
-        this.alertValue = true
-        this.alertMessage = 'Nome de usuário ou senha incorretos!'
-      })
+      this.$v.$touch()
+      if (!this.$v.$invalid) {
+        this.$auth.loginWith('local', { data: this.data }).catch(() => {
+          this.alertValue = true
+          this.alertMessage = 'Nome de usuário ou senha incorretos!'
+        })
+      }
     },
 
     toggleDarkMode() {
@@ -132,6 +133,32 @@ export default {
       this.$cookiz.set('darkMode', this.$vuetify.theme.dark)
     },
   },
+
+  validations() {
+    return {
+      data: {
+        username: { required },
+        password: { required },
+      },
+    }
+  },
+
+  computed: {
+    usernameErrors() {
+      const errors = []
+      if (!this.$v.data.username.$dirty) return errors
+      !this.$v.data.username.required && errors.push('Campo obrigatório!')
+      return errors
+    },
+
+    passwordErrors() {
+      const errors = []
+      if (!this.$v.data.password.$dirty) return errors
+      !this.$v.data.password.required && errors.push('Campo obrigatório!')
+      return errors
+    },
+  },
+
   watch: {
     alertValue(val) {
       if (val) {
