@@ -9,7 +9,7 @@
       Por enquanto, só estamos aceitando o cadastro de alunos da
       <strong>Universidade de São Paulo</strong>
     </v-alert>
-    <v-alert type="error" :value="showAlert" width="400px">
+    <v-alert :type="alertType" :value="showAlert" width="400px">
       {{ alertMessage }}
     </v-alert>
     <v-card outlined width="400px">
@@ -99,7 +99,7 @@
           </div>
           <v-btn color="primary" type="submit" block>Cadastrar</v-btn>
           <div class="d-flex justify-center mt-3">
-            <a href="/login" class="text-decoration-none">
+            <a href="/auth" class="text-decoration-none">
               Já possui cadastro? Entre!
             </a>
           </div>
@@ -124,6 +124,7 @@ export default {
         password1: '',
       },
       showAlert: false,
+      alertType: 'error',
       alertMessage: '',
       showPassword: false,
       showPassword1: false,
@@ -160,7 +161,20 @@ export default {
       this.$axios
         .post('/auth/user/', this.data)
         .then(() => {
-          this.$router.push('/login')
+          this.$axios
+            .post('/auth/send_email_confirmation/', {
+              email: this.data.email,
+            })
+            .then(() => {
+              this.alertType = 'success'
+              this.showAlert = true
+              this.alertMessage = `Enviamos um e-mail de confirmação para ${this.data.email}.`
+            })
+            .catch(() => {
+              this.alertType = 'error'
+              this.showAlert = true
+              this.alertMessage = 'Erro ao enviar e-mail de confirmação!'
+            })
         })
         .catch((e) => {
           this.alert = true

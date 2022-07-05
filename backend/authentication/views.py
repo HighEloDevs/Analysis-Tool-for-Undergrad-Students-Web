@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.utils import timezone
 from rest_framework import permissions
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -85,13 +85,20 @@ class UserView(APIView):
 
 
 @api_view(["POST"])
+@permission_classes([permissions.AllowAny])
 def send_email_confirmation(request: Request):
     """
     Send an email to confirm the user's email.
     """
     email = request.data["email"]
     six_char_code = generate_n_char_code(6)
-    body = f"Use o código {six_char_code} para confirmar seu email."
+    confirmation_link = f"http://191.9.32.200:25565/auth/email-confirmation/?code={six_char_code}&email={email}"
+    body = f"Seja bem-vindo ao Analysis Too for Undergrad Students!\n"
+    body += f"Para confirmar seu email, clique no link abaixo:\n\n"
+    body += f"{confirmation_link}\n\n"
+    body += f"Caso não tenha feito esta solicitação, ignore este email.\n"
+    body += f"Agradecemos sua compreensão.\n"
+    body += f"Equipe ATUS"
 
     # In case the user already has an email confirmation request
     if EmailConfirmationRequests.objects.filter(email=email).exists():
@@ -120,6 +127,7 @@ def send_email_confirmation(request: Request):
 
 
 @api_view(["POST"])
+@permission_classes([permissions.AllowAny])
 def confirm_email(request: Request):
     """Confirm the user's email."""
     email = request.data["email"]
