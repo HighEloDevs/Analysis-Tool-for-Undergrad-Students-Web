@@ -73,13 +73,13 @@ export default {
 
 <style scoped>
 .background-light {
-  background-image: url('https://images.alphacoders.com/101/1018102.jpg');
+  background-image: url('/background-light.jpg');
   background-size: cover;
   background-position: center;
 }
 
 .background-dark {
-  background-image: url('https://images8.alphacoders.com/101/1018165.jpg');
+  background-image: url('/background-dark.jpg');
   background-size: cover;
   background-position: center;
 }
