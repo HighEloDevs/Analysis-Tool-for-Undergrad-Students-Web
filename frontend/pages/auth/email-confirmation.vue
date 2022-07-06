@@ -1,25 +1,28 @@
 <template>
   <v-container
-    class="d-flex align-center justify-center flex-column"
     :class="$vuetify.theme.dark ? 'background-dark' : 'background-light'"
+    class="d-flex align-center justify-center flex-column"
     fluid
     fill-height
   >
     <v-alert
-      type="error"
       :value="alertValue"
-      width="500px"
+      type="error"
+      max-width="400px"
     >
       Código de confirmação inválido.
     </v-alert>
-    <v-card width="500px">
+    <v-card
+      :loading="loading"
+      max-width="400px"
+    >
       <v-card-title> Confirmação do e-mail </v-card-title>
       <v-card-text>
         <v-text-field
+          :rules="emailRules"
           v-model="email"
           label="E-mail para confirmação"
           outlined
-          :rules="emailRules"
         ></v-text-field>
         <v-otp-input
           v-model="code"
@@ -38,6 +41,7 @@ export default {
 
   data() {
     return {
+      loading: false,
       email: this.$route.query.email,
       code: this.$route.query.code,
       alertValue: false,
@@ -53,6 +57,7 @@ export default {
   methods: {
     confirmEmail() {
       if (!!this.email && !!this.code) {
+        this.loading = true
         this.$axios
           .post('/auth/confirm_email/', {
             email: this.email,
@@ -64,6 +69,9 @@ export default {
           .catch((e) => {
             console.log(e)
             this.alertValue = true
+          })
+          .finally(() => {
+            this.loading = false
           })
       }
     }

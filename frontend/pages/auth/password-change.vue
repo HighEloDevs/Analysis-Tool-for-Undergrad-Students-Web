@@ -9,10 +9,13 @@
       :type="alertType"
       :value="showAlert"
       v-text="alertMessage"
-      width="400px"
+      max-width="400px"
     >
     </v-alert>
-    <v-card width="400px">
+    <v-card
+      :loading="loading"
+      max-width="400px"
+    >
       <v-card-title> Trocar senha </v-card-title>
       <!-- In case there's a token -->
       <v-card-text v-if="code">
@@ -64,6 +67,7 @@
             </span>
           </div>
           <v-btn
+            :loading="loading"
             color="primary"
             type="submit"
             block
@@ -85,6 +89,7 @@
             outlined
           ></v-text-field>
           <v-btn
+            :loading="loading"
             color="primary"
             type="submit"
             block
@@ -106,6 +111,7 @@ export default {
     return {
       code: this.$route.query.code,
       email: this.$route.query.email,
+      loading: false,
       password: '',
       password1: '',
       showPassword: false,
@@ -129,6 +135,7 @@ export default {
   methods: {
     sendPasswordChangeRequest() {
       if (this.$refs.form.validate()) {
+        this.loading = true
         this.$axios
           .post('/auth/send_password_change_request/', {
             email: this.email
@@ -143,6 +150,9 @@ export default {
             this.alertMessage = 'Erro ao enviar solicitação!'
             this.alertType = 'error'
           })
+          .finally(() => {
+            this.loading = false
+          })
       }
     },
 
@@ -153,6 +163,7 @@ export default {
         this.alertType = 'error'
         return
       } else if (this.$refs.form.validate()) {
+        this.loading = true
         this.$axios
           .post('/auth/change_password/', {
             email: this.email,
@@ -171,6 +182,9 @@ export default {
             this.showAlert = true
             this.alertMessage = e.response.data.message
             this.alertType = 'error'
+          })
+          .finally(() => {
+            this.loading = false
           })
       }
     }

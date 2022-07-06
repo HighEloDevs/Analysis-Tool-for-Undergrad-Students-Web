@@ -8,7 +8,7 @@
     <v-alert
       type="warning"
       :value="true"
-      width="400px"
+      max-width="400px"
     >
       Por enquanto, só estamos aceitando o cadastro de alunos da
       <strong>Universidade de São Paulo</strong>
@@ -16,13 +16,14 @@
     <v-alert
       :type="alertType"
       :value="showAlert"
-      width="400px"
+      max-width="400px"
     >
       {{ alertMessage }}
     </v-alert>
     <v-card
+      :loading="loading"
       outlined
-      width="400px"
+      max-width="400px"
     >
       <v-card-title
         primary-title
@@ -116,11 +117,13 @@
             </span>
           </div>
           <v-btn
+            :loading="loading"
             color="primary"
             type="submit"
             block
-            >Cadastrar</v-btn
           >
+            Cadastrar
+          </v-btn>
           <div class="d-flex justify-center mt-3">
             <a
               href="/auth"
@@ -149,6 +152,7 @@ export default {
         password: '',
         password1: ''
       },
+      loading: false,
       showAlert: false,
       alertType: 'error',
       alertMessage: '',
@@ -183,7 +187,7 @@ export default {
         this.alertMessage = 'Senhas não conferem!'
         return
       }
-
+      this.loading = true
       this.$axios
         .post('/auth/user/', this.data)
         .then(() => {
@@ -201,10 +205,14 @@ export default {
               this.showAlert = true
               this.alertMessage = 'Erro ao enviar e-mail de confirmação!'
             })
+            .finally(() => {
+              this.loading = false
+            })
         })
         .catch((e) => {
           this.alert = true
           this.alertMessage = e.response.data.message
+          this.loading = false
         })
     }
   }

@@ -121,6 +121,7 @@
             </template>
           </v-text-field>
           <v-btn
+            :loading="loading"
             color="primary"
             type="submit"
             block
@@ -160,6 +161,7 @@ export default {
         username: '',
         password: ''
       },
+      loading: false,
       seePassword: false,
       alertValue: false,
       alertMessage: ''
@@ -170,9 +172,11 @@ export default {
     login() {
       this.$v.$touch()
       if (!this.$v.$invalid) {
+        this.loading = true
         this.$auth.loginWith('local', { data: this.data }).catch(() => {
           this.alertValue = true
           this.alertMessage = 'Nome de usuário ou senha incorretos!'
+          this.loading = false
         })
       }
     },
