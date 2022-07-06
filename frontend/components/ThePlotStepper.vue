@@ -15,7 +15,7 @@
       <small>Arquivo contendo os dados do projeto</small>
     </v-stepper-step>
     <v-stepper-content step="1">
-      <DropFilesZone
+      <BaseDropFilesZone
         :uploadedFiles="uploadedFiles"
         accept=".csv,.txt,.tsv,.xlsx"
         class="mb-3"

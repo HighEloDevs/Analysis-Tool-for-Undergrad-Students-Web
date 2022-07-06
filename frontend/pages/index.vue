@@ -315,7 +315,7 @@
     </v-navigation-drawer>
 
     <!-- Table -->
-    <ProjectDataTable
+    <TheProjectDataTable
       :headers="headers"
       :items="projects"
       :folders="folders"

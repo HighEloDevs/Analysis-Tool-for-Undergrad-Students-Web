@@ -49,7 +49,7 @@
       max-width="550px"
       transition="dialog-transition"
     >
-      <NewPlotStepper @finishStepper="onFinishStepper" />
+      <ThePlotStepper @finishStepper="onFinishStepper" />
     </v-dialog>
 
     <!-- Body -->
@@ -386,7 +386,7 @@
                     outlined
                     dense
                   ></v-file-input>
-                  <DataTableEditable :items="d.data" />
+                  <ThePlotDataTable :items="d.data" />
                   <!-- <v-card class="mt-5" flat>
                     <v-card-title class="pa-0">
                       Dados a serem ajustados
@@ -420,6 +420,7 @@
 </template>
 
 <script>
+import ThePlotDataTable from '../components/ThePlotDataTable.vue'
 export default {
   name: 'PlotPage',
   data() {
@@ -444,7 +445,6 @@ export default {
       })
       return '\\begin{bmatrix} ' + output.join(' \\\\ ') + ' \\end{bmatrix}'
     },
-
     /**
      * Triggered when the New Plot Stepper is finished
      * @param {Object} data The data from the stepper
@@ -459,7 +459,6 @@ export default {
       this.data[this.data.length - 1]['file'] = data.file
       this.fit(-1)
     },
-
     /**
      * Triggered when the fit function changes
      * @param {Integer} projectId The project id
@@ -469,7 +468,6 @@ export default {
       // Calls backend to parse the function
       this.fit(plotIndex)
     },
-
     onFileChange(plotIndex, newValue) {
       if (newValue === null) {
         this.data[plotIndex]['data'] = []
@@ -477,7 +475,6 @@ export default {
         this.data[plotIndex]['data'] = this.loadData(newValue)
       }
     },
-
     /**
      * Fits the function to data
      * @param {Integer} plotIndex The index of the plot
@@ -495,7 +492,6 @@ export default {
           console.log(error)
         })
     },
-
     /**
      * Reads the file from any format and returns a array
      * @param {File} file
@@ -520,7 +516,6 @@ export default {
       }
       fr.readAsText(file)
     },
-
     /**
      * Adds a new empty plot to the data
      */
@@ -548,7 +543,8 @@ export default {
         }
       })
     }
-  }
+  },
+  components: { ThePlotDataTable }
 }
 </script>
 
