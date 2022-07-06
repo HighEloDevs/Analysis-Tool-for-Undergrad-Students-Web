@@ -5,46 +5,93 @@
     class="d-flex flex-column justify-center align-center"
     :class="$vuetify.theme.dark ? 'background-dark' : 'background-light'"
   >
+    <v-alert
+      :type="alertType"
+      :value="showAlert"
+      v-text="alertMessage"
+      width="400px"
+    >
+    </v-alert>
     <v-card width="400px">
       <v-card-title> Trocar senha </v-card-title>
-      <v-card-text>
-        <v-text-field
-          :type="showPassword ? 'text' : 'password'"
-          v-model="password"
-          label="Nova senha"
-          type="password"
-          outlined
-          dense
+      <!-- In case there's a token -->
+      <v-card-text v-if="token">
+        <v-form
+          ref="form"
+          @submit.prevent="changePassword"
         >
-          <template #append>
-            <v-btn
-              icon
-              @click="showPassword = !showPassword"
-            >
-              <v-icon dense>
+          <v-text-field
+            :type="showPassword ? 'text' : 'password'"
+            :rules="passwordRules"
+            v-model="password"
+            label="Nova senha"
+            outlined
+          >
+            <template #append>
+              <v-icon
+                dense
+                @click="showPassword = !showPassword"
+              >
                 {{ showPassword ? 'fa-eye' : 'fa-eye-slash' }}
               </v-icon>
-            </v-btn>
-          </template>
-        </v-text-field>
-        <v-text-field
-          :type="showPassword1 ? 'text' : 'password'"
-          v-model="password1"
-          label="Confirmar senha"
-          outlined
-          dense
-        >
-          <template #append>
-            <v-btn
-              icon
-              @click="showPassword = !showPassword"
-            >
-              <v-icon dense>
-                {{ showPassword ? 'fa-eye' : 'fa-eye-slash' }}
+            </template>
+          </v-text-field>
+          <v-text-field
+            :type="showPassword1 ? 'text' : 'password'"
+            :rules="passwordRules"
+            v-model="password1"
+            label="Confirmar senha"
+            outlined
+          >
+            <template #append>
+              <v-icon
+                dense
+                @click="showPassword1 = !showPassword1"
+              >
+                {{ showPassword1 ? 'fa-eye' : 'fa-eye-slash' }}
               </v-icon>
-            </v-btn>
-          </template>
-        </v-text-field>
+            </template>
+          </v-text-field>
+          <div class="d-flex flex-column mb-4">
+            <span class="grey--text subtitle-2">
+              A senha deve conter, pelo menos:
+            </span>
+            <span class="grey--text subtitle-2"> - Uma letra maiúscula; </span>
+            <span class="grey--text subtitle-2"> - Um número; </span>
+            <span class="grey--text subtitle-2"> - 8 caracteres. </span>
+            <span class="grey--text subtitle-2">
+              - Um caracter especial (ex.: !@#$%&*).
+            </span>
+          </div>
+          <v-btn
+            color="primary"
+            type="submit"
+            block
+          >
+            Trocar senha
+          </v-btn>
+        </v-form>
+      </v-card-text>
+
+      <v-card-text v-else>
+        <v-form
+          ref="form"
+          @submit.prevent="sendPasswordChangeRequest"
+        >
+          <v-text-field
+            :rules="emailRules"
+            v-model="email"
+            label="E-mail"
+            outlined
+          ></v-text-field>
+          <v-btn
+            color="primary"
+            type="submit"
+            block
+          >
+            Enviar solicitação
+          </v-btn>
+        </v-form>
       </v-card-text>
     </v-card>
   </v-container>
@@ -57,10 +104,44 @@ export default {
 
   data() {
     return {
+      token: this.$route.query.token,
+      email: this.$route.query.email,
       password: '',
       password1: '',
       showPassword: false,
-      showPassword1: false
+      showPassword1: false,
+      showAlert: false,
+      alertMessage: '',
+      alertType: 'error',
+      passwordRegex:
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      emailRules: [
+        (v) => !!v || 'E-mail é obrigatório!',
+        (v) => /.+@.+\..+/.test(v) || 'E-mail inválido!'
+      ],
+      passwordRules: [
+        (v) => !!v || 'Senha é obrigatória!',
+        (v) => this.passwordRegex.test(v) || 'Senha inválida!'
+      ]
+    }
+  },
+
+  methods: {
+    sendPasswordChangeRequest() {
+      if (this.$refs.form.validate()) {
+        console.log('Sending password change request...')
+      }
+    },
+
+    changePassword() {
+      if (this.password != this.password1) {
+        this.showAlert = true
+        this.alertMessage = 'Senhas não conferem!'
+        this.alertType = 'error'
+        return
+      } else if (this.$refs.form.validate()) {
+        console.log('Changing password...')
+      }
     }
   }
 }

@@ -186,7 +186,20 @@
 
 <script>
 export default {
-  props: ['headers', 'items', 'folders', 'deleteMessage', 'emptyMessage'],
+  props: {
+    headers: {
+      type: Array,
+      default: () => []
+    },
+    items: {
+      type: Array,
+      default: () => []
+    },
+    folders: {
+      type: Array,
+      default: () => []
+    }
+  },
   data: () => ({
     addFolderDialog: [],
     dialog: false,

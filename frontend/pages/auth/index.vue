@@ -130,7 +130,7 @@
         </v-form>
         <div class="d-flex align-center justify-center my-2">
           <a
-            href="/"
+            href="/auth/password-change"
             class="text-decoration-none"
             >Esqueceu a senha?</a
           >

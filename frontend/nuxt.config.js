@@ -6,21 +6,21 @@ export default {
     titleTemplate: '%s',
     title: 'Analysis Tool for Undergrad Students',
     htmlAttrs: {
-      lang: 'pt-br',
+      lang: 'pt-br'
     },
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' },
+      { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       {
         rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css2?family=Unica+One&display=swap',
-      },
-    ],
+        href: 'https://fonts.googleapis.com/css2?family=Unica+One&display=swap'
+      }
+    ]
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -31,7 +31,7 @@ export default {
     '~/plugins/axios',
     '~/plugins/darkModeSelect',
     '~/plugins/katex',
-    '~/plugins/vuelidate',
+    '~/plugins/vuelidate'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -40,7 +40,7 @@ export default {
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
-    '@nuxtjs/vuetify',
+    '@nuxtjs/vuetify'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -48,14 +48,14 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/auth',
-    ['cookie-universal-nuxt', { alias: 'cookiz' }],
+    ['cookie-universal-nuxt', { alias: 'cookiz' }]
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     baseURL: process.env.AXIOS_BASEURL,
-    browserBaseURL: process.env.AXIOS_BROWSER_BASEURL,
+    browserBaseURL: process.env.AXIOS_BROWSER_BASEURL
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
@@ -71,13 +71,13 @@ export default {
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
-          success: colors.green.accent3,
-        },
-      },
+          success: colors.green.accent3
+        }
+      }
     },
     defaultAssets: {
-      icons: 'fa',
-    },
+      icons: 'fa'
+    }
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
@@ -91,31 +91,31 @@ export default {
         token: {
           property: 'access',
           global: true,
-          maxAge: 43200, // 12h
+          maxAge: 43200 // 12h
         },
         user: {
-          property: 'user',
+          property: 'user'
         },
         endpoints: {
           login: {
             url: '/auth/login/',
             method: 'post',
-            propertyName: 'access',
+            propertyName: 'access'
           },
           logout: { url: '/auth/logout/', method: 'post' },
-          user: { url: '/auth/user/', method: 'get' },
-        },
-      },
+          user: { url: '/auth/user/', method: 'get' }
+        }
+      }
     },
 
     redirect: {
       login: '/auth',
       logout: '/auth',
       callback: '/auth',
-      home: '/',
-    },
+      home: '/'
+    }
   },
 
   ssr: true,
-  target: 'server',
+  target: 'server'
 }
