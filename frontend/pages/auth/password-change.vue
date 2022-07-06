@@ -15,7 +15,7 @@
     <v-card width="400px">
       <v-card-title> Trocar senha </v-card-title>
       <!-- In case there's a token -->
-      <v-card-text v-if="token">
+      <v-card-text v-if="code">
         <v-form
           ref="form"
           @submit.prevent="changePassword"
@@ -104,7 +104,7 @@ export default {
 
   data() {
     return {
-      token: this.$route.query.token,
+      code: this.$route.query.code,
       email: this.$route.query.email,
       password: '',
       password1: '',
@@ -129,7 +129,20 @@ export default {
   methods: {
     sendPasswordChangeRequest() {
       if (this.$refs.form.validate()) {
-        console.log('Sending password change request...')
+        this.$axios
+          .post('/auth/send_password_change_request/', {
+            email: this.email
+          })
+          .then(() => {
+            this.showAlert = true
+            this.alertMessage = 'Solicitação enviada com sucesso!'
+            this.alertType = 'success'
+          })
+          .catch(() => {
+            this.showAlert = true
+            this.alertMessage = 'Erro ao enviar solicitação!'
+            this.alertType = 'error'
+          })
       }
     },
 
@@ -140,7 +153,25 @@ export default {
         this.alertType = 'error'
         return
       } else if (this.$refs.form.validate()) {
-        console.log('Changing password...')
+        this.$axios
+          .post('/auth/change_password/', {
+            email: this.email,
+            code: this.code,
+            password: this.password
+          })
+          .then(() => {
+            this.showAlert = true
+            this.alertMessage = 'Senha alterada com sucesso!'
+            this.alertType = 'success'
+            setTimeout(() => {
+              this.$router.push('/auth/')
+            }, 2000)
+          })
+          .catch((e) => {
+            this.showAlert = true
+            this.alertMessage = e.response.data.message
+            this.alertType = 'error'
+          })
       }
     }
   }

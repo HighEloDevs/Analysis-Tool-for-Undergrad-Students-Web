@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from .models import EmailConfirmationRequests
+from .models import EmailConfirmationRequests, PasswordChangeRequests
 
 
 def generate_n_char_code(n: int):
@@ -92,7 +92,7 @@ def send_email_confirmation(request: Request):
     """
     email = request.data["email"]
     six_char_code = generate_n_char_code(6)
-    confirmation_link = f"http://191.9.32.200:25565/auth/email-confirmation/?code={six_char_code}&email={email}"
+    confirmation_link = f"http://191.9.37.106:25565/auth/email-confirmation/?code={six_char_code}&email={email}"
     body = f"Seja bem-vindo ao Analysis Too for Undergrad Students!\n"
     body += f"Para confirmar seu email, clique no link abaixo:\n\n"
     body += f"{confirmation_link}\n\n"
@@ -149,3 +149,70 @@ def confirm_email(request: Request):
     user.save()
 
     return Response({"message": "Email confirmado com sucesso!"}, status=200)
+
+
+@api_view(["POST"])
+@permission_classes([permissions.AllowAny])
+def send_password_change_request(request: Request):
+    """Send an email with a link to change the user's password."""
+    email = request.data["email"]
+    code = generate_n_char_code(20)
+    confirmation_link = (
+        f"http://191.9.37.106:25565/auth/password-change/?code={code}&email={email}"
+    )
+    body = f"Para alterar sua senha, clique no link abaixo:\n\n"
+    body += f"{confirmation_link}\n\n"
+    body += f"Caso não tenha feito esta solicitação, ignore este email.\n"
+    body += f"Agradecemos sua compreensão.\n"
+    body += f"Equipe ATUS"
+
+    # In case the user already has an email confirmation request
+    if PasswordChangeRequests.objects.filter(email=email).exists():
+        email_confirmation_request = PasswordChangeRequests.objects.get(email=email)
+        email_confirmation_request.code = code
+        email_confirmation_request.expires_at = timezone.now() + timezone.timedelta(
+            hours=12
+        )
+        email_confirmation_request.save()
+    else:
+        PasswordChangeRequests.objects.create(
+            user=User.objects.get(email=email),
+            email=email,
+            code=code,
+        )
+
+    send_mail(
+        "ATUS - Alteração de senha",
+        body,
+        None,
+        [email],
+        fail_silently=False,
+    )
+
+    return Response(status=200)
+
+
+@api_view(["POST"])
+@permission_classes([permissions.AllowAny])
+def change_password(request: Request):
+    """Change the user's password."""
+    email = request.data["email"]
+    code = request.data["code"]
+    password = request.data["password"]
+
+    if not PasswordChangeRequests.objects.filter(email=email).exists():
+        return Response({"message": "Requisição não encontrada!"}, status=400)
+
+    email_confirmation_request = PasswordChangeRequests.objects.get(email=email)
+
+    if email_confirmation_request.code != code:
+        return Response({"message": "Código inválido!"}, status=400)
+    elif email_confirmation_request.expires_at < timezone.now():
+        return Response({"message": "Código expirado!"}, status=400)
+
+    email_confirmation_request.delete()
+    user = User.objects.get(email=email)
+    user.set_password(password)
+    user.save()
+
+    return Response({"message": "Senha alterada com sucesso!"}, status=200)
