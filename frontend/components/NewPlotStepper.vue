@@ -1,5 +1,8 @@
 <template>
-  <v-stepper v-model="step" vertical>
+  <v-stepper
+    v-model="step"
+    vertical
+  >
     <!-- Step 1 -->
     <v-stepper-step
       :complete="step > 1"
@@ -17,12 +20,28 @@
         accept=".csv,.txt,.tsv,.xlsx"
         class="mb-3"
       />
-      <v-btn color="primary" @click="step = 2"> Avançar </v-btn>
-      <v-btn text color="error" to="/"> Cancelar </v-btn>
+      <v-btn
+        color="primary"
+        @click="step = 2"
+      >
+        Avançar
+      </v-btn>
+      <v-btn
+        text
+        color="error"
+        to="/"
+      >
+        Cancelar
+      </v-btn>
     </v-stepper-content>
 
     <!-- Step 2 -->
-    <v-stepper-step :complete="step > 2" step="2" edit-icon="fa-pen" editable>
+    <v-stepper-step
+      :complete="step > 2"
+      step="2"
+      edit-icon="fa-pen"
+      editable
+    >
       Qual a função a ser ajustada?
       <small>Opcional</small>
     </v-stepper-step>
@@ -46,7 +65,10 @@
             Valor inicial
           </p>
         </v-list-item>
-        <v-list-item v-for="param in params" :key="param.param">
+        <v-list-item
+          v-for="param in params"
+          :key="param.param"
+        >
           <v-list-item-title>{{ param.param }}</v-list-item-title>
           <v-text-field
             v-model="param.value"
@@ -56,12 +78,28 @@
           ></v-text-field>
         </v-list-item>
       </v-list>
-      <v-btn color="primary" @click="step = 3"> Avançar </v-btn>
-      <v-btn text color="error" to="/"> Cancelar </v-btn>
+      <v-btn
+        color="primary"
+        @click="step = 3"
+      >
+        Avançar
+      </v-btn>
+      <v-btn
+        text
+        color="error"
+        to="/"
+      >
+        Cancelar
+      </v-btn>
     </v-stepper-content>
 
     <!-- Step 3 -->
-    <v-stepper-step :complete="step > 3" step="3" edit-icon="fa-pen" editable>
+    <v-stepper-step
+      :complete="step > 3"
+      step="3"
+      edit-icon="fa-pen"
+      editable
+    >
       Resumo
     </v-stepper-step>
     <v-stepper-content step="3">
@@ -77,7 +115,10 @@
           !!fitFunction ? fitFunction : 'Nenhum'
         }}</v-list-item-subtitle>
       </v-list-item>
-      <v-list-item v-for="param in params" :key="param.param">
+      <v-list-item
+        v-for="param in params"
+        :key="param.param"
+      >
         <v-list-item-title>{{ param.param }}</v-list-item-title>
         <v-list-item-subtitle class="text-left">{{
           param.value
@@ -91,7 +132,14 @@
       >
         Plot
       </v-btn>
-      <v-btn text color="error" class="mt-4" to="/"> Cancelar </v-btn>
+      <v-btn
+        text
+        color="error"
+        class="mt-4"
+        to="/"
+      >
+        Cancelar
+      </v-btn>
     </v-stepper-content>
   </v-stepper>
 </template>
@@ -104,7 +152,7 @@ export default {
       fitFunction: '',
       uploadDialog: true,
       uploadedFiles: [],
-      params: [],
+      params: []
     }
   },
   methods: {
@@ -116,9 +164,9 @@ export default {
       this.$emit('finishStepper', {
         fitFunction: this.fitFunction,
         file: this.uploadedFiles[0],
-        params: this.params,
+        params: this.params
       })
-    },
-  },
+    }
+  }
 }
 </script>

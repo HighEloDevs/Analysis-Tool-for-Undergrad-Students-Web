@@ -54,7 +54,10 @@
             </v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
-            <v-btn @click.stop="removeFile(item.name)" icon>
+            <v-btn
+              @click.stop="removeFile(item.name)"
+              icon
+            >
               <v-icon> fa-xmark </v-icon>
             </v-btn>
           </v-list-item-action>
@@ -67,7 +70,11 @@
       @click="$refs.fileInput.click()"
       text
     >
-      <v-icon small left>fa-plus</v-icon>
+      <v-icon
+        small
+        left
+        >fa-plus</v-icon
+      >
       Adicionar
     </v-btn>
   </v-container>
@@ -78,22 +85,22 @@ export default {
   props: {
     multiple: {
       type: Boolean,
-      default: false,
+      default: false
     },
     uploadedFiles: {
       type: Array,
-      default: [],
+      default: []
     },
     accept: {
       type: String,
-      default: '*',
-    },
+      default: '*'
+    }
   },
 
   data() {
     return {
       mouseOver: false,
-      dragOver: false,
+      dragOver: false
     }
   },
 
@@ -126,8 +133,8 @@ export default {
     loadFiles(e) {
       let files = Array.from(e.target.files)
       files.forEach((element) => this.uploadedFiles.push(element))
-    },
-  },
+    }
+  }
 }
 </script>
 

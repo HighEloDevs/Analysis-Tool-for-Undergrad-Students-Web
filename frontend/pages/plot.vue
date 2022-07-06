@@ -1,11 +1,28 @@
 <template>
-  <v-container class="ma-0 pa-0" fill-height fluid>
+  <v-container
+    class="ma-0 pa-0"
+    fill-height
+    fluid
+  >
     <!-- App Bar -->
-    <v-app-bar color="primary" app dense>
+    <v-app-bar
+      color="primary"
+      app
+      dense
+    >
       <v-tooltip right>
         <template #activator="{ on, attrs }">
-          <v-btn v-on="on" v-bind="attrs" to="/" icon>
-            <v-icon class="white--text" small>fa-chevron-left</v-icon>
+          <v-btn
+            v-on="on"
+            v-bind="attrs"
+            to="/"
+            icon
+          >
+            <v-icon
+              class="white--text"
+              small
+              >fa-chevron-left</v-icon
+            >
           </v-btn>
         </template>
         Voltar
@@ -17,7 +34,11 @@
           {{ projectData.subtitle }}
         </span>
       </div>
-      <v-icon class="ml-3 white--text" small>fa-edit</v-icon>
+      <v-icon
+        class="ml-3 white--text"
+        small
+        >fa-edit</v-icon
+      >
       <v-spacer></v-spacer>
     </v-app-bar>
 
@@ -32,18 +53,34 @@
     </v-dialog>
 
     <!-- Body -->
-    <v-container class="ma-0 pa-0 align-stretch" fill-height fluid>
+    <v-container
+      class="ma-0 pa-0 align-stretch"
+      fill-height
+      fluid
+    >
       <v-row class="ma-0">
         <!-- Left Panel -->
-        <v-col cols="12" md="6" class="ma-0 pa-0">
+        <v-col
+          cols="12"
+          md="6"
+          class="ma-0 pa-0"
+        >
           <v-tabs :vertical="$vuetify.breakpoint.mdAndUp">
             <!-- Tabs -->
             <div
               class="d-flex flex-md-column"
               style="width: 100%; height: 100%"
             >
-              <v-tab v-for="(_, i) in data" :key="i"> Plot {{ i }} </v-tab>
-              <v-tooltip right :bottom="!$vuetify.breakpoint.mdAndUp">
+              <v-tab
+                v-for="(_, i) in data"
+                :key="i"
+              >
+                Plot {{ i }}
+              </v-tab>
+              <v-tooltip
+                right
+                :bottom="!$vuetify.breakpoint.mdAndUp"
+              >
                 <template #activator="{ on, attrs }">
                   <v-btn
                     v-on="on"
@@ -54,7 +91,11 @@
                     @click="addPlot"
                     tile
                   >
-                    <v-icon class="primary--text" v-show="data.length" dense>
+                    <v-icon
+                      class="primary--text"
+                      v-show="data.length"
+                      dense
+                    >
                       fa-plus
                     </v-icon>
                   </v-btn>
@@ -76,7 +117,11 @@
                   <v-spacer></v-spacer>
                   <v-tooltip bottom>
                     <template #activator="{ on, attrs }">
-                      <v-btn v-on="on" v-bind="attrs" icon>
+                      <v-btn
+                        v-on="on"
+                        v-bind="attrs"
+                        icon
+                      >
                         <v-icon small>fa-square-poll-vertical</v-icon>
                       </v-btn>
                     </template>
@@ -84,7 +129,12 @@
                   </v-tooltip>
                   <v-tooltip bottom>
                     <template #activator="{ on, attrs }">
-                      <v-btn v-on="on" v-bind="attrs" color="error" icon>
+                      <v-btn
+                        v-on="on"
+                        v-bind="attrs"
+                        color="error"
+                        icon
+                      >
                         <v-icon small>fa-trash</v-icon>
                       </v-btn>
                     </template>
@@ -126,7 +176,10 @@
                     Limites do ajuste no eixo <strong>x</strong>
                   </header>
                   <v-row>
-                    <v-col cols="12" sm="6">
+                    <v-col
+                      cols="12"
+                      sm="6"
+                    >
                       <v-text-field
                         v-model="d.options.fitRange[0]"
                         class="removeArrows"
@@ -138,7 +191,10 @@
                         dense
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6">
+                    <v-col
+                      cols="12"
+                      sm="6"
+                    >
                       <v-text-field
                         v-model="d.options.fitRange[1]"
                         class="removeArrows"
@@ -154,7 +210,10 @@
 
                   <header class="mt-6">Incertezas</header>
                   <v-row>
-                    <v-col cols="12" md="6">
+                    <v-col
+                      cols="12"
+                      md="6"
+                    >
                       <v-checkbox
                         v-model="d.options.useSx"
                         class="ma-0"
@@ -165,7 +224,10 @@
                         </template>
                       </v-checkbox>
                     </v-col>
-                    <v-col cols="12" md="6">
+                    <v-col
+                      cols="12"
+                      md="6"
+                    >
                       <v-checkbox
                         v-model="d.options.useSy"
                         class="ma-0"
@@ -179,7 +241,10 @@
                   </v-row>
 
                   <v-row>
-                    <v-col cols="12" md="6">
+                    <v-col
+                      cols="12"
+                      md="6"
+                    >
                       <v-checkbox
                         v-model="d.options.fit"
                         class="ma-0"
@@ -190,7 +255,10 @@
                         </template>
                       </v-checkbox>
                     </v-col>
-                    <v-col cols="12" md="6">
+                    <v-col
+                      cols="12"
+                      md="6"
+                    >
                       <v-checkbox
                         v-model="d.options.connectDots"
                         class="ma-0"
@@ -333,8 +401,18 @@
         </v-col>
 
         <!-- Canvas -->
-        <v-col class="pa-0" cols="12" md="6">
-          <v-card height="100%" color="gold" min-height="500px" flat> </v-card>
+        <v-col
+          class="pa-0"
+          cols="12"
+          md="6"
+        >
+          <v-card
+            height="100%"
+            color="gold"
+            min-height="500px"
+            flat
+          >
+          </v-card>
         </v-col>
       </v-row>
     </v-container>
@@ -349,9 +427,9 @@ export default {
       data: [],
       projectData: {
         title: 'Título do projeto',
-        subtitle: 'Subtitulo',
+        subtitle: 'Subtitulo'
       },
-      stepperDialog: true,
+      stepperDialog: true
     }
   },
   methods: {
@@ -431,7 +509,7 @@ export default {
         this.$axios
           .post('/parsers/simple_parser', {
             data: data,
-            type: type,
+            type: type
           })
           .then((res) => {
             return res.data
@@ -457,7 +535,7 @@ export default {
           useSx: true,
           useSy: true,
           fit: true,
-          connectDots: false,
+          connectDots: false
         },
         // This is the data returned from backend
         fitData: {
@@ -466,11 +544,11 @@ export default {
           covMatrix: [],
           chi2: 0,
           sumRes: 0,
-          ngl: 0,
-        },
+          ngl: 0
+        }
       })
-    },
-  },
+    }
+  }
 }
 </script>
 

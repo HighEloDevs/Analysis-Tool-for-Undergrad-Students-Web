@@ -5,22 +5,40 @@
     :class="$vuetify.theme.dark ? 'background-dark' : 'background-light'"
     class="d-flex flex-column align-center justify-center"
   >
-    <v-alert type="warning" :value="true" width="400px">
+    <v-alert
+      type="warning"
+      :value="true"
+      width="400px"
+    >
       Por enquanto, só estamos aceitando o cadastro de alunos da
       <strong>Universidade de São Paulo</strong>
     </v-alert>
-    <v-alert :type="alertType" :value="showAlert" width="400px">
+    <v-alert
+      :type="alertType"
+      :value="showAlert"
+      width="400px"
+    >
       {{ alertMessage }}
     </v-alert>
-    <v-card outlined width="400px">
-      <v-card-title primary-title class="d-flex flex-column justify-center">
+    <v-card
+      outlined
+      width="400px"
+    >
+      <v-card-title
+        primary-title
+        class="d-flex flex-column justify-center"
+      >
         <span>Cadastro de usuário</span>
         <span class="caption grey--text">
           Insira seus dados e comece a usar!
         </span>
       </v-card-title>
       <v-card-text>
-        <v-form ref="signupForm" @submit.prevent="signup" lazy-validation>
+        <v-form
+          ref="signupForm"
+          @submit.prevent="signup"
+          lazy-validation
+        >
           <div class="d-flex">
             <v-text-field
               :rules="required"
@@ -97,9 +115,17 @@
               - Um caracter especial (ex.: !@#$%&*).
             </span>
           </div>
-          <v-btn color="primary" type="submit" block>Cadastrar</v-btn>
+          <v-btn
+            color="primary"
+            type="submit"
+            block
+            >Cadastrar</v-btn
+          >
           <div class="d-flex justify-center mt-3">
-            <a href="/auth" class="text-decoration-none">
+            <a
+              href="/auth"
+              class="text-decoration-none"
+            >
               Já possui cadastro? Entre!
             </a>
           </div>
@@ -121,7 +147,7 @@ export default {
         username: '',
         email: '',
         password: '',
-        password1: '',
+        password1: ''
       },
       showAlert: false,
       alertType: 'error',
@@ -136,16 +162,16 @@ export default {
       nameRules: [(v) => !!v || 'Campo obrigatório!'],
       emailRules: [
         (v) => !!v || 'E-mail é obrigatório!',
-        (v) => /.+@.+\..+/.test(v) || 'E-mail inválido!',
+        (v) => /.+@.+\..+/.test(v) || 'E-mail inválido!'
       ],
       passwordRules: [
         (v) => !!v || 'Senha é obrigatória!',
-        (v) => this.passwordRegex.test(v) || 'Senha inválida!',
+        (v) => this.passwordRegex.test(v) || 'Senha inválida!'
       ],
       usernameRules: [
         (v) => !!v || 'Usuário é obrigatório!',
-        (v) => this.usernameRegex.test(v) || 'Usuário inválido!',
-      ],
+        (v) => this.usernameRegex.test(v) || 'Usuário inválido!'
+      ]
     }
   },
 
@@ -163,7 +189,7 @@ export default {
         .then(() => {
           this.$axios
             .post('/auth/send_email_confirmation/', {
-              email: this.data.email,
+              email: this.data.email
             })
             .then(() => {
               this.alertType = 'success'
@@ -180,8 +206,8 @@ export default {
           this.alert = true
           this.alertMessage = e.response.data.message
         })
-    },
-  },
+    }
+  }
 }
 </script>
 

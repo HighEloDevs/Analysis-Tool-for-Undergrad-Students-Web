@@ -5,7 +5,11 @@
     fluid
     fill-height
   >
-    <v-alert type="error" :value="alertValue" width="500px">
+    <v-alert
+      type="error"
+      :value="alertValue"
+      width="500px"
+    >
       Código de confirmação inválido.
     </v-alert>
     <v-card width="500px">
@@ -41,8 +45,8 @@ export default {
         (v) => !!v || 'E-mail é obrigatório',
         (v) =>
           /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-          'E-mail inválido',
-      ],
+          'E-mail inválido'
+      ]
     }
   },
 
@@ -52,7 +56,7 @@ export default {
         this.$axios
           .post('/auth/confirm_email/', {
             email: this.email,
-            code: this.code,
+            code: this.code
           })
           .then(() => {
             this.$router.push('/auth/')
@@ -62,12 +66,12 @@ export default {
             this.alertValue = true
           })
       }
-    },
+    }
   },
 
   mounted() {
     this.confirmEmail()
-  },
+  }
 }
 </script>
 

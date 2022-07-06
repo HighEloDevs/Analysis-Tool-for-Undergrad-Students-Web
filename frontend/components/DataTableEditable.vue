@@ -37,7 +37,10 @@
                 dense
               ></v-combobox>
             </v-col>
-            <v-col v-show="operation.value !== 'switch'" cols="12">
+            <v-col
+              v-show="operation.value !== 'switch'"
+              cols="12"
+            >
               <v-text-field
                 label="Valor"
                 v-model="operationValue"
@@ -50,20 +53,43 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="error" text @click="operationsDialog = false">
+          <v-btn
+            color="error"
+            text
+            @click="operationsDialog = false"
+          >
             Cancelar
           </v-btn>
-          <v-btn color="primary" text @click="applyOperation"> Aplicar </v-btn>
+          <v-btn
+            color="primary"
+            text
+            @click="applyOperation"
+          >
+            Aplicar
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
-    <v-data-table :headers="headers" :items="items">
+    <v-data-table
+      :headers="headers"
+      :items="items"
+    >
       <template #top>
-        <v-toolbar color="transparent" dense flat>
+        <v-toolbar
+          color="transparent"
+          dense
+          flat
+        >
           <v-tooltip bottom>
             <template #activator="{ on, attrs }">
-              <v-btn v-on="on" v-bind="attrs" @click="addRow" dense icon>
+              <v-btn
+                v-on="on"
+                v-bind="attrs"
+                @click="addRow"
+                dense
+                icon
+              >
                 <v-icon small>fa-plus</v-icon>
               </v-btn>
             </template>
@@ -94,7 +120,10 @@
         ></v-checkbox>
       </template>
       <template #item.x="props">
-        <v-edit-dialog :return-value.sync="props.item.x" @save="onSave">
+        <v-edit-dialog
+          :return-value.sync="props.item.x"
+          @save="onSave"
+        >
           {{ props.item.x }}
           <template #input>
             <v-text-field
@@ -108,7 +137,10 @@
         </v-edit-dialog>
       </template>
       <template #item.y="props">
-        <v-edit-dialog :return-value.sync="props.item.y" @save="onSave">
+        <v-edit-dialog
+          :return-value.sync="props.item.y"
+          @save="onSave"
+        >
           {{ props.item.y }}
           <template #input>
             <v-text-field
@@ -122,7 +154,10 @@
         </v-edit-dialog>
       </template>
       <template #item.sy="props">
-        <v-edit-dialog :return-value.sync="props.item.sy" @save="onSave">
+        <v-edit-dialog
+          :return-value.sync="props.item.sy"
+          @save="onSave"
+        >
           {{ props.item.sy }}
           <template #input>
             <v-text-field
@@ -136,7 +171,10 @@
         </v-edit-dialog>
       </template>
       <template #item.sx="props">
-        <v-edit-dialog :return-value.sync="props.item.sx" @save="onSave">
+        <v-edit-dialog
+          :return-value.sync="props.item.sx"
+          @save="onSave"
+        >
           {{ props.item.sx }}
           <template #input>
             <v-text-field
@@ -151,14 +189,25 @@
       </template>
       <template #item.actions="item">
         <v-edit-dialog>
-          <v-btn icon small>
-            <v-icon small color="error">fa-trash</v-icon>
+          <v-btn
+            icon
+            small
+          >
+            <v-icon
+              small
+              color="error"
+              >fa-trash</v-icon
+            >
           </v-btn>
           <template #input>
             <v-card flat>
               <v-card-title> Tem certeza? </v-card-title>
               <v-card-text class="d-flex justify-center">
-                <v-btn @click="deleteRow(item)" color="error" text>
+                <v-btn
+                  @click="deleteRow(item)"
+                  color="error"
+                  text
+                >
                   Deletar
                 </v-btn>
               </v-card-text>
@@ -168,11 +217,21 @@
       </template>
     </v-data-table>
 
-    <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
+    <v-snackbar
+      v-model="snack"
+      :timeout="3000"
+      :color="snackColor"
+    >
       {{ snackText }}
 
       <template #action="{ attrs }">
-        <v-btn v-bind="attrs" text @click="snack = false"> Close </v-btn>
+        <v-btn
+          v-bind="attrs"
+          text
+          @click="snack = false"
+        >
+          Close
+        </v-btn>
       </template>
     </v-snackbar>
   </div>
@@ -183,13 +242,13 @@ export default {
   props: {
     items: {
       type: Array,
-      default: () => [],
-    },
+      default: () => []
+    }
   },
 
   model: {
     prop: 'items',
-    event: 'updateInput',
+    event: 'updateInput'
   },
 
   data() {
@@ -204,28 +263,28 @@ export default {
       operations: [
         {
           text: 'Somar',
-          value: 'sum',
+          value: 'sum'
         },
         {
           text: 'Subtrair',
-          value: 'subtract',
+          value: 'subtract'
         },
         {
           text: 'Multiplicar',
-          value: 'multiply',
+          value: 'multiply'
         },
         {
           text: 'Dividir',
-          value: 'divide',
+          value: 'divide'
         },
         {
           text: 'Substituir',
-          value: 'replace',
+          value: 'replace'
         },
         {
           text: 'Trocar Colunas',
-          value: 'switch',
-        },
+          value: 'switch'
+        }
       ],
       headers: [
         { text: '', value: 'use', sortable: false, width: '20px' },
@@ -238,17 +297,17 @@ export default {
           value: 'actions',
           sortable: false,
           align: 'right',
-          width: '20px',
-        },
+          width: '20px'
+        }
       ],
       columns: [
         { text: 'X', value: 'x' },
-        { text: 'Y', value: 'y' },
+        { text: 'Y', value: 'y' }
       ],
       operation: {
         text: 'Somar',
-        value: 'sum',
-      },
+        value: 'sum'
+      }
     }
   },
   methods: {
@@ -261,7 +320,7 @@ export default {
         y: 0,
         sy: 0,
         sx: 0,
-        use: true,
+        use: true
       })
     },
 
@@ -338,7 +397,7 @@ export default {
           this.$set(item, this.columns[1].value, aux)
         })
       }
-    },
-  },
+    }
+  }
 }
 </script>

@@ -6,24 +6,35 @@
     style="border-radius: 0px; background: transparent"
     sort-by="Último acesso"
     color="blue"
-	item-key="title"
-	v-model="selectedProjects"
+    item-key="title"
+    v-model="selectedProjects"
     disable-pagination
     hide-default-footer
-	show-select
+    show-select
   >
     <template v-slot:top>
-      <v-dialog v-model="dialogDelete" max-width="500px">
+      <v-dialog
+        v-model="dialogDelete"
+        max-width="500px"
+      >
         <v-card>
           <v-card-title class="text-h6">
             Tem certeza que deseja deletar esse projeto?
           </v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="closeDelete">
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="closeDelete"
+            >
               Cancel
             </v-btn>
-            <v-btn color="blue darken-1" text @click="deleteItemConfirm">
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="deleteItemConfirm"
+            >
               OK
             </v-btn>
             <v-spacer></v-spacer>
@@ -31,40 +42,59 @@
         </v-card>
       </v-dialog>
 
-		<v-container class="d-flex align-center">
-			<v-text-field
-			  class="pa-3"
-			  label="Procurar projetos"
-			  outlined
-			  dense
-			  hide-details
-			  v-model="search"
-			>
-			  <template v-slot:prepend-inner>
-				<v-icon class="mt-1 mr-2" small>fa-magnifying-glass</v-icon>
-			  </template>
-			</v-text-field>
+      <v-container class="d-flex align-center">
+        <v-text-field
+          class="pa-3"
+          label="Procurar projetos"
+          outlined
+          dense
+          hide-details
+          v-model="search"
+        >
+          <template v-slot:prepend-inner>
+            <v-icon
+              class="mt-1 mr-2"
+              small
+              >fa-magnifying-glass</v-icon
+            >
+          </template>
+        </v-text-field>
 
-			<v-menu offset-y>
-        <template v-slot:activator="{ on , attrs }">
-          <v-btn v-on="on" v-bind="attrs" color="primary">
-            Mais
-            <v-icon small right>fa-caret-down</v-icon>
-          </v-btn>
-        </template>
-        <v-list>
-          <v-list-item @click="deleteSelectedProjects">  
-            <v-list-item-title class="red--text"> Deletar </v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-		</v-container>
+        <v-menu offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-on="on"
+              v-bind="attrs"
+              color="primary"
+            >
+              Mais
+              <v-icon
+                small
+                right
+                >fa-caret-down</v-icon
+              >
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item @click="deleteSelectedProjects">
+              <v-list-item-title class="red--text"> Deletar </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-container>
     </template>
 
     <template v-slot:item.title="{ item }">
-      <v-list-item two-line dense class="px-0">
+      <v-list-item
+        two-line
+        dense
+        class="px-0"
+      >
         <v-list-item-avatar>
-          <v-btn :href="item.url" icon>
+          <v-btn
+            :href="item.url"
+            icon
+          >
             <v-icon small>fa-up-right-from-square</v-icon>
           </v-btn>
         </v-list-item-avatar>
@@ -76,14 +106,23 @@
     </template>
 
     <template v-slot:item.actions="{ item }">
-      <v-icon small class="ml-2 red--text lighten-3" @click="deleteItem(item)"> fa-trash </v-icon>
+      <v-icon
+        small
+        class="ml-2 red--text lighten-3"
+        @click="deleteItem(item)"
+      >
+        fa-trash
+      </v-icon>
     </template>
 
     <template v-slot:item.folders="{ item, value }">
-      <v-container class="d-flex ma-0 pa-0 align-center" max-width="100px">
+      <v-container
+        class="d-flex ma-0 pa-0 align-center"
+        max-width="100px"
+      >
         <v-chip-group column>
           <v-chip
-            v-for="folder, index in item.folders"
+            v-for="(folder, index) in item.folders"
             :key="index"
             :color="getColor(folder)"
             class="font-weight-medium grey--text text--lighten-3"
@@ -111,15 +150,24 @@
 
             <template v-slot:default="dialog">
               <v-card>
-                <v-card-title primary-title>
-                  Escolha as pastas
-                </v-card-title>
+                <v-card-title primary-title> Escolha as pastas </v-card-title>
                 <v-card-text>
-                  <v-checkbox v-for="f in folders" :key="f.text" :value="f.text" :label="f.text" v-model="item.folders"></v-checkbox>
+                  <v-checkbox
+                    v-for="f in folders"
+                    :key="f.text"
+                    :value="f.text"
+                    :label="f.text"
+                    v-model="item.folders"
+                  ></v-checkbox>
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="success" text @click.native="dialog.value = false">Salvar</v-btn>
+                  <v-btn
+                    color="success"
+                    text
+                    @click.native="dialog.value = false"
+                    >Salvar</v-btn
+                  >
                 </v-card-actions>
               </v-card>
             </template>
@@ -132,9 +180,7 @@
       Clique em 'Novo Projeto' para criar um novo projeto.
     </template>
 
-    <template v-slot:no-results>
-      Nenhum resultado encontrado.
-    </template>
+    <template v-slot:no-results> Nenhum resultado encontrado. </template>
   </v-data-table>
 </template>
 
@@ -142,17 +188,17 @@
 export default {
   props: ['headers', 'items', 'folders', 'deleteMessage', 'emptyMessage'],
   data: () => ({
-	addFolderDialog: [],
+    addFolderDialog: [],
     dialog: false,
     dialogDelete: false,
     search: '',
-	selectedProjects: []
+    selectedProjects: []
   }),
 
   watch: {
     dialogDelete(val) {
       val || this.closeDelete()
-    },
+    }
   },
 
   methods: {
@@ -188,6 +234,6 @@ export default {
         this.items.splice(this.items.indexOf(i), 1)
       })
     }
-  },
+  }
 }
 </script>

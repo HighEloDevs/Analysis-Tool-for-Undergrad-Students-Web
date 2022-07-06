@@ -1,20 +1,44 @@
 <template>
-  <v-container class="d-flex" fluid fill-height ma-0 pa-0>
+  <v-container
+    class="d-flex"
+    fluid
+    fill-height
+    ma-0
+    pa-0
+  >
     <!-- Left Panel -->
     <div
       class="fill-height primary d-none d-md-flex flex-column"
       :class="$vuetify.theme.dark ? 'background-dark' : 'background-light'"
       style="flex-grow: 3"
     >
-      <v-app-bar color="transparent" flat>
-        <v-btn @click="toggleDarkMode" color="white" icon>
+      <v-app-bar
+        color="transparent"
+        flat
+      >
+        <v-btn
+          @click="toggleDarkMode"
+          color="white"
+          icon
+        >
           <v-icon>{{ $vuetify.theme.dark ? 'fa-moon' : 'fa-sun' }}</v-icon>
         </v-btn>
-        <v-btn color="white" text>Sobre</v-btn>
-        <v-btn color="white" text>Contato</v-btn>
+        <v-btn
+          color="white"
+          text
+          >Sobre</v-btn
+        >
+        <v-btn
+          color="white"
+          text
+          >Contato</v-btn
+        >
       </v-app-bar>
       <v-spacer vertical></v-spacer>
-      <v-footer color="transparent" height="65px">
+      <v-footer
+        color="transparent"
+        height="65px"
+      >
         <img
           src="~/static/logos/highelo-logo-full-white.png"
           alt="High Elo Logotipo"
@@ -29,7 +53,11 @@
       class="d-flex fill-height justify-center align-center"
       style="flex-grow: 1"
     >
-      <v-card color="transparent" width="350px" flat>
+      <v-card
+        color="transparent"
+        width="350px"
+        flat
+      >
         <v-card-title
           class="flex-column justify-center black--text"
           primary-title
@@ -56,8 +84,14 @@
             Insira seus dados para entrar no ATUS
           </span>
         </v-card-title>
-        <v-form @submit.prevent="login" ref="loginForm">
-          <v-alert type="error" :value="alertValue">
+        <v-form
+          @submit.prevent="login"
+          ref="loginForm"
+        >
+          <v-alert
+            type="error"
+            :value="alertValue"
+          >
             {{ alertMessage }}
           </v-alert>
           <v-text-field
@@ -86,13 +120,28 @@
               </v-icon>
             </template>
           </v-text-field>
-          <v-btn color="primary" type="submit" block> Entrar </v-btn>
+          <v-btn
+            color="primary"
+            type="submit"
+            block
+          >
+            Entrar
+          </v-btn>
         </v-form>
         <div class="d-flex align-center justify-center my-2">
-          <a href="/" class="text-decoration-none">Esqueceu a senha?</a>
+          <a
+            href="/"
+            class="text-decoration-none"
+            >Esqueceu a senha?</a
+          >
         </div>
         <v-divider></v-divider>
-        <v-btn color="secondary" class="mt-5" href="/auth/signup" block>
+        <v-btn
+          color="secondary"
+          class="mt-5"
+          href="/auth/signup"
+          block
+        >
           Cadastrar
         </v-btn>
       </v-card>
@@ -109,11 +158,11 @@ export default {
     return {
       data: {
         username: '',
-        password: '',
+        password: ''
       },
       seePassword: false,
       alertValue: false,
-      alertMessage: '',
+      alertMessage: ''
     }
   },
 
@@ -131,15 +180,15 @@ export default {
     toggleDarkMode() {
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark
       this.$cookiz.set('darkMode', this.$vuetify.theme.dark)
-    },
+    }
   },
 
   validations() {
     return {
       data: {
         username: { required },
-        password: { required },
-      },
+        password: { required }
+      }
     }
   },
 
@@ -156,7 +205,7 @@ export default {
       if (!this.$v.data.password.$dirty) return errors
       !this.$v.data.password.required && errors.push('Campo obrigatório!')
       return errors
-    },
+    }
   },
 
   watch: {
@@ -166,8 +215,8 @@ export default {
           this.alert = false
         }, 8000)
       }
-    },
-  },
+    }
+  }
 }
 </script>
 
