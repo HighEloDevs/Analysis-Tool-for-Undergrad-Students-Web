@@ -9,6 +9,7 @@
       color="primary"
       app
       dense
+      flat
     >
       <v-tooltip right>
         <template #activator="{ on, attrs }">
@@ -21,8 +22,9 @@
             <v-icon
               class="white--text"
               small
-              >fa-chevron-left</v-icon
             >
+              fa-chevron-left
+            </v-icon>
           </v-btn>
         </template>
         Voltar
@@ -37,8 +39,9 @@
       <v-icon
         class="ml-3 white--text"
         small
-        >fa-edit</v-icon
       >
+        fa-edit
+      </v-icon>
       <v-spacer></v-spacer>
     </v-app-bar>
 
@@ -65,7 +68,10 @@
           md="6"
           class="ma-0 pa-0"
         >
-          <v-tabs :vertical="$vuetify.breakpoint.mdAndUp">
+          <v-tabs
+            :vertical="$vuetify.breakpoint.mdAndUp"
+            background-color="primary"
+          >
             <!-- Tabs -->
             <div
               class="d-flex flex-md-column"
@@ -87,12 +93,12 @@
                     v-bind="attrs"
                     class="elevation-0 flex-grow-1"
                     style="height: auto"
-                    color="transparent"
-                    @click="addPlot"
+                    color="primary"
                     tile
+                    @click="addPlot"
                   >
                     <v-icon
-                      class="primary--text"
+                      class="white--text"
                       v-show="data.length"
                       dense
                     >
@@ -108,294 +114,348 @@
             <v-tab-item
               v-for="(d, i) in data"
               :key="i"
-              style="height: calc(100vh - 48px)"
-              class="overflow-y-auto"
             >
-              <v-card flat>
-                <v-card-title>
-                  <span>Configurações do ajuste</span>
-                  <v-spacer></v-spacer>
-                  <v-tooltip bottom>
-                    <template #activator="{ on, attrs }">
-                      <v-btn
-                        v-on="on"
-                        v-bind="attrs"
-                        icon
-                      >
-                        <v-icon small>fa-square-poll-vertical</v-icon>
-                      </v-btn>
-                    </template>
-                    Dados do ajuste
-                  </v-tooltip>
-                  <v-tooltip bottom>
-                    <template #activator="{ on, attrs }">
-                      <v-btn
-                        v-on="on"
-                        v-bind="attrs"
-                        color="error"
-                        icon
-                      >
-                        <v-icon small>fa-trash</v-icon>
-                      </v-btn>
-                    </template>
-                    Excluir esses dados
-                  </v-tooltip>
-                </v-card-title>
-                <v-card-text class="px-6">
-                  <v-text-field
-                    @change="onFitFunctionChange(i, d.fitFunction)"
-                    v-model="d.fitFunction"
-                    label="Função de ajuste"
-                    hint="Função que será ajustada"
-                    prefix="f(x) = "
-                    outlined
-                    dense
-                  ></v-text-field>
+              <v-container
+                fluid
+                style="height: calc(100vh - 48px)"
+                class="d-flex flex-column"
+              >
+                <v-card
+                  flat
+                  class="overflow-y-auto fill-height"
+                >
+                  <v-card-title>
+                    <span>Configurações do ajuste</span>
+                    <v-spacer></v-spacer>
+                    <v-dialog
+                      v-model="fitDataDialogs[i]"
+                      max-width="400px"
+                      transition="dialog-transition"
+                    >
+                      <template #activator="{ on, attrs }">
+                        <v-btn
+                          v-on="on"
+                          v-bind="attrs"
+                          :disabled="!d.fitData.params.length"
+                          text
+                          color="primary"
+                        >
+                          <v-icon
+                            small
+                            left
+                          >
+                            fa-square-poll-vertical
+                          </v-icon>
+                          Dados do ajuste
+                        </v-btn>
+                      </template>
 
-                  <header v-show="d.params.length">
-                    Valores iniciais dos parâmetros
-                  </header>
-                  <v-row>
-                    <v-col
-                      v-for="param in d.params"
-                      :key="param.name"
-                      cols="12"
-                      md="6"
-                    >
-                      <v-text-field
-                        :prefix="param.name + ' = '"
-                        v-model="param.value"
-                        hide-details
-                        outlined
-                        dense
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
+                      <v-card flat>
+                        <v-card-title> Dados do ajuste </v-card-title>
+                        <v-card-text>
+                          <v-simple-table dense>
+                            <template v-slot:default>
+                              <thead>
+                                <tr>
+                                  <th class="text-left">Parâmetro</th>
+                                  <th class="text-left">Valor</th>
+                                  <th class="text-left">Incerteza</th>
+                                  <th class="text-right">Ações</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr
+                                  v-for="param in d.fitData.params"
+                                  :key="param.name"
+                                >
+                                  <td>{{ param.name }}</td>
+                                  <td>{{ param.value }}</td>
+                                  <td>{{ param.sigma }}</td>
+                                  <td class="d-flex justify-end">
+                                    <v-tooltip bottom>
+                                      <template #activator="{ on, attrs }">
+                                        <v-btn
+                                          v-on="on"
+                                          v-bind="attrs"
+                                          icon
+                                          small
+                                        >
+                                          <v-icon small>fa-copy</v-icon>
+                                        </v-btn>
+                                      </template>
+                                      Copiar
+                                    </v-tooltip>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </template>
+                          </v-simple-table>
 
-                  <header class="mt-6">
-                    Limites do ajuste no eixo <strong>x</strong>
-                  </header>
-                  <v-row>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                    >
-                      <v-text-field
-                        v-model="d.options.fitRange[0]"
-                        class="removeArrows"
-                        type="number"
-                        hint="Ajuste de ..."
-                        persistent-hint
-                        single-line
-                        outlined
-                        dense
-                      ></v-text-field>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                    >
-                      <v-text-field
-                        v-model="d.options.fitRange[1]"
-                        class="removeArrows"
-                        type="number"
-                        hint="Ajuste até ..."
-                        persistent-hint
-                        single-line
-                        outlined
-                        dense
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-
-                  <header class="mt-6">Incertezas</header>
-                  <v-row>
-                    <v-col
-                      cols="12"
-                      md="6"
-                    >
-                      <v-checkbox
-                        v-model="d.options.useSx"
-                        class="ma-0"
-                        hide-details
-                      >
-                        <template #label>
-                          <span> Considerar em <strong>x</strong> </span>
-                        </template>
-                      </v-checkbox>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      md="6"
-                    >
-                      <v-checkbox
-                        v-model="d.options.useSy"
-                        class="ma-0"
-                        hide-details
-                      >
-                        <template #label>
-                          <span> Considerar em <strong>y</strong> </span>
-                        </template>
-                      </v-checkbox>
-                    </v-col>
-                  </v-row>
-
-                  <v-row>
-                    <v-col
-                      cols="12"
-                      md="6"
-                    >
-                      <v-checkbox
-                        v-model="d.options.fit"
-                        class="ma-0"
-                        hide-details
-                      >
-                        <template #label>
-                          <span> Ajustar função </span>
-                        </template>
-                      </v-checkbox>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      md="6"
-                    >
-                      <v-checkbox
-                        v-model="d.options.connectDots"
-                        class="ma-0"
-                        hide-details
-                      >
-                        <template #label>
-                          <span> Ligar pontos </span>
-                        </template>
-                      </v-checkbox>
-                    </v-col>
-                  </v-row>
-
-                  <!-- <v-card class="mt-6" flat>
-                    <v-card-title class="pa-0"> Dados do ajuste </v-card-title>
-                    <v-card-text class="py-4 px-0">
-                      <v-simple-table dense>
-                        <template v-slot:default>
-                          <thead>
-                            <tr>
-                              <th class="text-left">Parâmetro</th>
-                              <th class="text-left">Valor</th>
-                              <th class="text-left">Incerteza</th>
-                              <th class="text-right">Ações</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr
-                              v-for="param in d.fitData.params"
-                              :key="param.name"
+                          <v-row class="mt-4 align-start">
+                            <v-col
+                              cols="6"
+                              class="d-flex flex-column justify-center align-center text-center"
                             >
-                              <td>{{ param.name }}</td>
-                              <td>{{ param.value }}</td>
-                              <td>{{ param.sigma }}</td>
-                              <td class="d-flex justify-end">
-                                <v-tooltip bottom>
-                                  <template #activator="{ on, attrs }">
-                                    <v-btn v-on="on" v-bind="attrs" icon small>
-                                      <v-icon small>fa-copy</v-icon>
-                                    </v-btn>
-                                  </template>
-                                  Copiar
-                                </v-tooltip>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </template>
-                      </v-simple-table>
+                              <span class="font-weight-bold subtitle-1"
+                                >NGL</span
+                              >
+                              <span>{{ d.fitData.ngl }}</span>
+                            </v-col>
+                            <v-col
+                              cols="6"
+                              class="d-flex flex-column justify-center align-center"
+                            >
+                              <span
+                                v-if="d.fitData.chi2 !== null"
+                                class="font-weight-bold subtitle-1"
+                              >
+                                𝜒²
+                              </span>
+                              <span
+                                v-if="d.fitData.chi2 !== null"
+                                class="subtitle-2"
+                              >
+                                {{ d.fitData.chi2 }}
+                              </span>
+                              <span
+                                v-if="d.fitData.chi2 === null"
+                                class="font-weight-bold subtitle-1 text-center"
+                              >
+                                Somatória dos resíduos absolutos
+                              </span>
 
-                      <v-row class="mt-4 align-start">
-                        <v-col
-                          cols="6"
-                          class="d-flex flex-column justify-center align-center text-center"
+                              <span
+                                v-if="d.fitData.chi2 === null"
+                                class="subtitle-2"
+                              >
+                                {{ d.fitData.sumRes }}
+                              </span>
+                            </v-col>
+                            <v-col
+                              lg="6"
+                              cols="12"
+                              class="d-flex flex-column justify-center align-center"
+                            >
+                              <span
+                                class="font-weight-bold subtitle-1 text-center"
+                              >
+                                Matriz de covariância
+                              </span>
+                              <div
+                                class="mt-2"
+                                style="font-size: 20px"
+                                v-katex="arr2matrix(d.fitData.covMatrix)"
+                              ></div>
+                            </v-col>
+                            <v-col
+                              lg="6"
+                              cols="12"
+                              class="d-flex flex-column justify-center align-center text-center"
+                            >
+                              <span class="font-weight-bold subtitle-1">
+                                Matriz de correlação
+                              </span>
+                              <div
+                                class="mt-2"
+                                style="font-size: 20px"
+                                v-katex="arr2matrix(d.fitData.corrMatrix)"
+                              ></div>
+                            </v-col>
+                          </v-row>
+                        </v-card-text>
+                      </v-card>
+                    </v-dialog>
+                    <v-dialog
+                      v-model="deletePlotDialogs[i]"
+                      max-width="500px"
+                      transition="dialog-transition"
+                    >
+                      <template #activator="{ on, attrs }">
+                        <v-btn
+                          v-on="on"
+                          v-bind="attrs"
+                          color="error"
+                          icon
+                          @click="removePlot(i)"
                         >
-                          <span class="font-weight-bold subtitle-1">NGL</span>
-                          <span>{{ d.fitData.ngl }}</span>
-                        </v-col>
-                        <v-col
-                          cols="6"
-                          class="d-flex flex-column justify-center align-center"
-                        >
-                          <span
-                            v-if="d.fitData.chi2 !== null"
-                            class="font-weight-bold subtitle-1"
-                          >
-                            𝜒²
-                          </span>
-                          <span
-                            v-if="d.fitData.chi2 !== null"
-                            class="subtitle-2"
-                          >
-                            {{ d.fitData.chi2 }}
-                          </span>
-                          <span
-                            v-if="d.fitData.chi2 === null"
-                            class="font-weight-bold subtitle-1 text-center"
-                          >
-                            Somatória dos resíduos absolutos
-                          </span>
+                          <v-icon small>fa-trash</v-icon>
+                        </v-btn>
+                      </template>
 
-                          <span
-                            v-if="d.fitData.chi2 === null"
-                            class="subtitle-2"
+                      <v-card flat>
+                        <v-card-title>
+                          <span> Deseja realmente remover o plot? </span>
+                        </v-card-title>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn
+                            color="primary"
+                            text
+                            @click="deletePlotDialogs[i] = false"
                           >
-                            {{ d.fitData.sumRes }}
-                          </span>
-                        </v-col>
-                        <v-col
-                          lg="6"
-                          cols="12"
-                          class="d-flex flex-column justify-center align-center"
-                        >
-                          <span class="font-weight-bold subtitle-1 text-center">
-                            Matriz de covariância
-                          </span>
-                          <div
-                            class="mt-2"
-                            style="font-size: 20px"
-                            v-katex="arr2matrix(d.fitData.covMatrix)"
-                          ></div>
-                        </v-col>
-                        <v-col
-                          lg="6"
-                          cols="12"
-                          class="d-flex flex-column justify-center align-center text-center"
-                        >
-                          <span class="font-weight-bold subtitle-1"
-                            >Matriz de correlação</span
+                            Cancelar
+                          </v-btn>
+                          <v-btn
+                            color="error"
+                            text
+                            @click="removePlot(i)"
                           >
-                          <div
-                            class="mt-2"
-                            style="font-size: 20px"
-                            v-katex="arr2matrix(d.fitData.corrMatrix)"
-                          ></div>
-                        </v-col>
-                      </v-row>
-                    </v-card-text>
-                  </v-card> -->
+                            Remover
+                          </v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+                  </v-card-title>
+                  <v-card-text class="px-6">
+                    <v-text-field
+                      @change="onFitFunctionChange(i, d.fitFunction)"
+                      v-model="d.fitFunction"
+                      label="Função de ajuste"
+                      hint="Função que será ajustada"
+                      prefix="f(x) = "
+                      outlined
+                      dense
+                    ></v-text-field>
 
-                  <!-- Data -->
-                  <v-file-input
-                    v-model="d.file"
-                    class="mt-7"
-                    label="Arquivo de dados"
-                    @change="onFileChange(i, d.file)"
-                    outlined
-                    dense
-                  ></v-file-input>
-                  <ThePlotDataTable :items="d.data" />
-                  <!-- <v-card class="mt-5" flat>
-                    <v-card-title class="pa-0">
-                      Dados a serem ajustados
-                    </v-card-title>
-                    <v-card-text class="">
-                    </v-card-text>
-                  </v-card> -->
-                </v-card-text>
-              </v-card>
+                    <header v-show="d.params.length">
+                      Valores iniciais dos parâmetros
+                    </header>
+                    <v-row>
+                      <v-col
+                        v-for="param in d.params"
+                        :key="param.name"
+                        cols="12"
+                        md="6"
+                      >
+                        <v-text-field
+                          :prefix="param.name + ' = '"
+                          v-model="param.value"
+                          hide-details
+                          outlined
+                          dense
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+
+                    <header class="mt-6">
+                      Limites do ajuste no eixo <strong>x</strong>
+                    </header>
+                    <v-row>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                      >
+                        <v-text-field
+                          v-model="d.options.fitRange[0]"
+                          class="removeArrows"
+                          type="number"
+                          hint="Ajuste de ..."
+                          persistent-hint
+                          single-line
+                          outlined
+                          dense
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                      >
+                        <v-text-field
+                          v-model="d.options.fitRange[1]"
+                          class="removeArrows"
+                          type="number"
+                          hint="Ajuste até ..."
+                          persistent-hint
+                          single-line
+                          outlined
+                          dense
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+
+                    <header class="mt-6">Incertezas</header>
+                    <v-row>
+                      <v-col
+                        cols="12"
+                        md="6"
+                      >
+                        <v-checkbox
+                          v-model="d.options.useSx"
+                          class="ma-0"
+                          hide-details
+                        >
+                          <template #label>
+                            <span> Considerar em <strong>x</strong> </span>
+                          </template>
+                        </v-checkbox>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        md="6"
+                      >
+                        <v-checkbox
+                          v-model="d.options.useSy"
+                          class="ma-0"
+                          hide-details
+                        >
+                          <template #label>
+                            <span> Considerar em <strong>y</strong> </span>
+                          </template>
+                        </v-checkbox>
+                      </v-col>
+                    </v-row>
+
+                    <v-row>
+                      <v-col
+                        cols="12"
+                        md="6"
+                      >
+                        <v-checkbox
+                          v-model="d.options.fit"
+                          class="ma-0"
+                          hide-details
+                        >
+                          <template #label>
+                            <span> Ajustar função </span>
+                          </template>
+                        </v-checkbox>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        md="6"
+                      >
+                        <v-checkbox
+                          v-model="d.options.connectDots"
+                          class="ma-0"
+                          hide-details
+                        >
+                          <template #label>
+                            <span> Ligar pontos </span>
+                          </template>
+                        </v-checkbox>
+                      </v-col>
+                    </v-row>
+
+                    <!-- Data -->
+                    <v-divider class="mt-6"></v-divider>
+                    <v-file-input
+                      v-model="d.file"
+                      prepend-icon=""
+                      class="mt-6"
+                      label="Arquivo de dados"
+                      hint="Arquivos suportados: .csv, .tsv, .txt, .xlsx"
+                      accept=".csv,.txt,.tsv,.xlsx"
+                      outlined
+                      dense
+                      show-size
+                      persistent-hint
+                      @change="onFileChange(i, d.file)"
+                    ></v-file-input>
+                    <ThePlotDataTable :items="d.data" />
+                  </v-card-text>
+                </v-card>
+                <v-btn color="primary">Ajustar</v-btn>
+              </v-container>
             </v-tab-item>
           </v-tabs>
         </v-col>
@@ -408,9 +468,9 @@
         >
           <v-card
             height="100%"
-            color="gold"
             min-height="500px"
             flat
+            tile
           >
           </v-card>
         </v-col>
@@ -420,17 +480,18 @@
 </template>
 
 <script>
-import ThePlotDataTable from '../components/ThePlotDataTable.vue'
 export default {
   name: 'PlotPage',
   data() {
     return {
+      fitDataDialogs: [],
+      deletePlotDialogs: [],
       data: [],
       projectData: {
         title: 'Título do projeto',
         subtitle: 'Subtitulo'
       },
-      stepperDialog: true
+      stepperDialog: false
     }
   },
   methods: {
@@ -534,17 +595,43 @@ export default {
         },
         // This is the data returned from backend
         fitData: {
-          params: [],
-          corrMatrix: [],
-          covMatrix: [],
-          chi2: 0,
+          params: [
+            {
+              name: 'a',
+              value: 1.11,
+              sigma: 2.32
+            }
+          ],
+          corrMatrix: [
+            [1, 0.5],
+            [0.5, 1]
+          ],
+          covMatrix: [
+            [1, 0.5],
+            [0.5, 1]
+          ],
+          chi2: 32,
           sumRes: 0,
-          ngl: 0
+          ngl: 54
         }
       })
+    },
+    /**
+     * Removes a plot from the data
+     * @param {Integer} plotIndex The index of the plot
+     */
+    removePlot(plotIndex) {
+      this.deletePlotDialogs[plotIndex] = false
+      this.data.splice(plotIndex, 1)
+      if (this.data.length === 0) {
+        this.addPlot()
+      }
     }
   },
-  components: { ThePlotDataTable }
+
+  mounted() {
+    this.addPlot()
+  }
 }
 </script>
 

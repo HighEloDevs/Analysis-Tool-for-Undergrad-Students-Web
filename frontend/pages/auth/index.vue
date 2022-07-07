@@ -24,15 +24,19 @@
           <v-icon>{{ $vuetify.theme.dark ? 'fa-moon' : 'fa-sun' }}</v-icon>
         </v-btn>
         <v-btn
+          to="/home/about"
           color="white"
           text
-          >Sobre</v-btn
         >
+          Sobre
+        </v-btn>
         <v-btn
+          to="/home/contact"
           color="white"
           text
-          >Contato</v-btn
         >
+          Contato
+        </v-btn>
       </v-app-bar>
       <v-spacer vertical></v-spacer>
       <v-footer

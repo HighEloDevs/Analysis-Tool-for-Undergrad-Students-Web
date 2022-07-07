@@ -1,6 +1,7 @@
 version: "3"
 services:
     backend:
+        container_name: ATUS_backend
         build: ./backend
         expose:
             - "8000:8000"
@@ -23,6 +24,7 @@ services:
             - ./backend:/code
 
     frontend:
+        container_name: ATUS_frontend
         build: ./frontend
         expose:
             - "3000:3000"

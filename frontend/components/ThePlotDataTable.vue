@@ -74,6 +74,8 @@
     <v-data-table
       :headers="headers"
       :items="items"
+      hide-default-footer
+      no-data-text="Nenhum dado encontrado"
     >
       <template #top>
         <v-toolbar
@@ -214,6 +216,12 @@
             </v-card>
           </template>
         </v-edit-dialog>
+      </template>
+      <template #footer="{ props }">
+        <v-pagination
+          :length="props.pagination.pageCount"
+          v-model="props.options.page"
+        ></v-pagination>
       </template>
     </v-data-table>
 

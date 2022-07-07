@@ -1,6 +1,7 @@
 version: "3.9"
 services:
     backend:
+        container_name: ATUS_backend
         build:
             context: ./backend
         command: bash -c "
@@ -24,6 +25,7 @@ services:
             - db
 
     frontend:
+        container_name: ATUS_frontend
         build: ./frontend
         expose:
             - "3000"
