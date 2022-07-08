@@ -136,7 +136,6 @@
                         <v-btn
                           v-on="on"
                           v-bind="attrs"
-                          :disabled="!d.fitData.params.length"
                           text
                           color="primary"
                         >
@@ -144,122 +143,117 @@
                             small
                             left
                           >
-                            fa-square-poll-vertical
+                            fa-sliders
                           </v-icon>
-                          Dados do ajuste
+                          Configurações
                         </v-btn>
                       </template>
 
                       <v-card flat>
-                        <v-card-title> Dados do ajuste </v-card-title>
+                        <v-card-title>
+                          Configurações extras do ajuste
+                        </v-card-title>
                         <v-card-text>
-                          <v-simple-table dense>
-                            <template v-slot:default>
-                              <thead>
-                                <tr>
-                                  <th class="text-left">Parâmetro</th>
-                                  <th class="text-left">Valor</th>
-                                  <th class="text-left">Incerteza</th>
-                                  <th class="text-right">Ações</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr
-                                  v-for="param in d.fitData.params"
-                                  :key="param.name"
-                                >
-                                  <td>{{ param.name }}</td>
-                                  <td>{{ param.value }}</td>
-                                  <td>{{ param.sigma }}</td>
-                                  <td class="d-flex justify-end">
-                                    <v-tooltip bottom>
-                                      <template #activator="{ on, attrs }">
-                                        <v-btn
-                                          v-on="on"
-                                          v-bind="attrs"
-                                          icon
-                                          small
-                                        >
-                                          <v-icon small>fa-copy</v-icon>
-                                        </v-btn>
-                                      </template>
-                                      Copiar
-                                    </v-tooltip>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </template>
-                          </v-simple-table>
-
-                          <v-row class="mt-4 align-start">
+                          <header>
+                            Limites do ajuste no eixo <strong>x</strong>
+                          </header>
+                          <v-row>
                             <v-col
-                              cols="6"
-                              class="d-flex flex-column justify-center align-center text-center"
-                            >
-                              <span class="font-weight-bold subtitle-1"
-                                >NGL</span
-                              >
-                              <span>{{ d.fitData.ngl }}</span>
-                            </v-col>
-                            <v-col
-                              cols="6"
-                              class="d-flex flex-column justify-center align-center"
-                            >
-                              <span
-                                v-if="d.fitData.chi2 !== null"
-                                class="font-weight-bold subtitle-1"
-                              >
-                                𝜒²
-                              </span>
-                              <span
-                                v-if="d.fitData.chi2 !== null"
-                                class="subtitle-2"
-                              >
-                                {{ d.fitData.chi2 }}
-                              </span>
-                              <span
-                                v-if="d.fitData.chi2 === null"
-                                class="font-weight-bold subtitle-1 text-center"
-                              >
-                                Somatória dos resíduos absolutos
-                              </span>
-
-                              <span
-                                v-if="d.fitData.chi2 === null"
-                                class="subtitle-2"
-                              >
-                                {{ d.fitData.sumRes }}
-                              </span>
-                            </v-col>
-                            <v-col
-                              lg="6"
                               cols="12"
-                              class="d-flex flex-column justify-center align-center"
+                              sm="6"
                             >
-                              <span
-                                class="font-weight-bold subtitle-1 text-center"
-                              >
-                                Matriz de covariância
-                              </span>
-                              <div
-                                class="mt-2"
-                                style="font-size: 20px"
-                                v-katex="arr2matrix(d.fitData.covMatrix)"
-                              ></div>
+                              <v-text-field
+                                v-model="d.options.fitRange[0]"
+                                class="removeArrows"
+                                type="number"
+                                hint="Ajuste de ..."
+                                persistent-hint
+                                single-line
+                                outlined
+                                dense
+                              ></v-text-field>
                             </v-col>
                             <v-col
-                              lg="6"
                               cols="12"
-                              class="d-flex flex-column justify-center align-center text-center"
+                              sm="6"
                             >
-                              <span class="font-weight-bold subtitle-1">
-                                Matriz de correlação
-                              </span>
-                              <div
-                                class="mt-2"
-                                style="font-size: 20px"
-                                v-katex="arr2matrix(d.fitData.corrMatrix)"
-                              ></div>
+                              <v-text-field
+                                v-model="d.options.fitRange[1]"
+                                class="removeArrows"
+                                type="number"
+                                hint="Ajuste até ..."
+                                persistent-hint
+                                single-line
+                                outlined
+                                dense
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
+
+                          <header class="mt-2">Incertezas</header>
+                          <v-row>
+                            <v-col
+                              cols="12"
+                              md="6"
+                            >
+                              <v-checkbox
+                                v-model="d.options.useSx"
+                                class="ma-0"
+                                hide-details
+                              >
+                                <template #label>
+                                  <span>
+                                    Considerar em <strong>x</strong>
+                                  </span>
+                                </template>
+                              </v-checkbox>
+                            </v-col>
+                            <v-col
+                              cols="12"
+                              md="6"
+                            >
+                              <v-checkbox
+                                v-model="d.options.useSy"
+                                class="ma-0"
+                                hide-details
+                              >
+                                <template #label>
+                                  <span>
+                                    Considerar em <strong>y</strong>
+                                  </span>
+                                </template>
+                              </v-checkbox>
+                            </v-col>
+                          </v-row>
+
+                          <v-row>
+                            <v-col
+                              cols="12"
+                              md="6"
+                            >
+                              <v-checkbox
+                                v-model="d.options.fit"
+                                class="ma-0"
+                                hide-details
+                              >
+                                <template #label>
+                                  <span> Ajustar função </span>
+                                </template>
+                              </v-checkbox>
+                            </v-col>
+                            <v-col
+                              cols="12"
+                              md="6"
+                            >
+                              <v-checkbox
+                                v-model="d.options.connectDots"
+                                class="ma-0"
+                                hide-details
+                              >
+                                <template #label>
+                                  <span> Ligar pontos </span>
+                                </template>
+                              </v-checkbox>
                             </v-col>
                           </v-row>
                         </v-card-text>
@@ -276,34 +270,35 @@
                           v-bind="attrs"
                           color="error"
                           icon
-                          @click="removePlot(i)"
                         >
                           <v-icon small>fa-trash</v-icon>
                         </v-btn>
                       </template>
 
-                      <v-card flat>
-                        <v-card-title>
-                          <span> Deseja realmente remover o plot? </span>
-                        </v-card-title>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn
-                            color="primary"
-                            text
-                            @click="deletePlotDialogs[i] = false"
-                          >
-                            Cancelar
-                          </v-btn>
-                          <v-btn
-                            color="error"
-                            text
-                            @click="removePlot(i)"
-                          >
-                            Remover
-                          </v-btn>
-                        </v-card-actions>
-                      </v-card>
+                      <template #default="dialog">
+                        <v-card flat>
+                          <v-card-title>
+                            <span> Deseja realmente remover o plot? </span>
+                          </v-card-title>
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                              color="primary"
+                              text
+                              @click="dialog.value = false"
+                            >
+                              Cancelar
+                            </v-btn>
+                            <v-btn
+                              color="error"
+                              text
+                              @click="removePlot(i)"
+                            >
+                              Remover
+                            </v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </template>
                     </v-dialog>
                   </v-card-title>
                   <v-card-text class="px-6">
@@ -317,7 +312,7 @@
                       dense
                     ></v-text-field>
 
-                    <header v-show="d.params.length">
+                    <header v-show="!!d.params.length">
                       Valores iniciais dos parâmetros
                     </header>
                     <v-row>
@@ -337,102 +332,126 @@
                       </v-col>
                     </v-row>
 
-                    <header class="mt-6">
-                      Limites do ajuste no eixo <strong>x</strong>
-                    </header>
-                    <v-row>
-                      <v-col
-                        cols="12"
-                        sm="6"
-                      >
-                        <v-text-field
-                          v-model="d.options.fitRange[0]"
-                          class="removeArrows"
-                          type="number"
-                          hint="Ajuste de ..."
-                          persistent-hint
-                          single-line
-                          outlined
-                          dense
-                        ></v-text-field>
-                      </v-col>
-                      <v-col
-                        cols="12"
-                        sm="6"
-                      >
-                        <v-text-field
-                          v-model="d.options.fitRange[1]"
-                          class="removeArrows"
-                          type="number"
-                          hint="Ajuste até ..."
-                          persistent-hint
-                          single-line
-                          outlined
-                          dense
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
+                    <v-divider class="mt-4 mb-2"></v-divider>
 
-                    <header class="mt-6">Incertezas</header>
-                    <v-row>
-                      <v-col
-                        cols="12"
-                        md="6"
-                      >
-                        <v-checkbox
-                          v-model="d.options.useSx"
-                          class="ma-0"
-                          hide-details
-                        >
-                          <template #label>
-                            <span> Considerar em <strong>x</strong> </span>
-                          </template>
-                        </v-checkbox>
-                      </v-col>
-                      <v-col
-                        cols="12"
-                        md="6"
-                      >
-                        <v-checkbox
-                          v-model="d.options.useSy"
-                          class="ma-0"
-                          hide-details
-                        >
-                          <template #label>
-                            <span> Considerar em <strong>y</strong> </span>
-                          </template>
-                        </v-checkbox>
-                      </v-col>
-                    </v-row>
+                    <v-simple-table dense>
+                      <template v-slot:default>
+                        <thead>
+                          <tr>
+                            <th class="text-left">Parâmetro</th>
+                            <th class="text-left">Valor</th>
+                            <th class="text-left">Incerteza</th>
+                            <th class="text-right">Ações</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="param in d.fitData.params"
+                            :key="param.name"
+                          >
+                            <td>{{ param.name }}</td>
+                            <td>{{ param.value }}</td>
+                            <td>{{ param.sigma }}</td>
+                            <td class="d-flex justify-end">
+                              <v-tooltip bottom>
+                                <template #activator="{ on, attrs }">
+                                  <v-btn
+                                    v-on="on"
+                                    v-bind="attrs"
+                                    icon
+                                    small
+                                  >
+                                    <v-icon small>fa-copy</v-icon>
+                                  </v-btn>
+                                </template>
+                                Copiar
+                              </v-tooltip>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Graus de liberdade</td>
+                            <td>{{ d.fitData.ngl }}</td>
+                            <td></td>
+                            <td class="d-flex justify-end">
+                              <v-tooltip bottom>
+                                <template #activator="{ on, attrs }">
+                                  <v-btn
+                                    v-on="on"
+                                    v-bind="attrs"
+                                    icon
+                                    small
+                                  >
+                                    <v-icon small>fa-copy</v-icon>
+                                  </v-btn>
+                                </template>
+                                Copiar
+                              </v-tooltip>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              {{
+                                d.fitData.chi2
+                                  ? '𝜒²'
+                                  : 'Somatória dos resíduos absolutos'
+                              }}
+                            </td>
+                            <td>
+                              {{
+                                d.fitData.chi2
+                                  ? d.fitData.chi2
+                                  : d.fitData.sumRes
+                              }}
+                            </td>
+                            <td></td>
+                            <td class="d-flex justify-end">
+                              <v-tooltip bottom>
+                                <template #activator="{ on, attrs }">
+                                  <v-btn
+                                    v-on="on"
+                                    v-bind="attrs"
+                                    icon
+                                    small
+                                  >
+                                    <v-icon small>fa-copy</v-icon>
+                                  </v-btn>
+                                </template>
+                                Copiar
+                              </v-tooltip>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
 
-                    <v-row>
+                    <v-row class="mt-4 align-start">
                       <v-col
+                        lg="6"
                         cols="12"
-                        md="6"
+                        class="d-flex flex-column justify-center align-center"
                       >
-                        <v-checkbox
-                          v-model="d.options.fit"
-                          class="ma-0"
-                          hide-details
-                        >
-                          <template #label>
-                            <span> Ajustar função </span>
-                          </template>
-                        </v-checkbox>
+                        <span class="font-weight-bold subtitle-1 text-center">
+                          Matriz de covariância
+                        </span>
+                        <div
+                          class="mt-2"
+                          style="font-size: 20px"
+                          v-katex="arr2matrix(d.fitData.covMatrix)"
+                        ></div>
                       </v-col>
                       <v-col
+                        lg="6"
                         cols="12"
-                        md="6"
+                        class="d-flex flex-column justify-center align-center text-center"
                       >
-                        <v-checkbox
-                          v-model="d.options.connectDots"
-                          class="ma-0"
-                          hide-details
-                        >
-                          <template #label>
-                            <span> Ligar pontos </span>
-                          </template>
-                        </v-checkbox>
+                        <span class="font-weight-bold subtitle-1">
+                          Matriz de correlação
+                        </span>
+                        <div
+                          class="mt-2"
+                          style="font-size: 20px"
+                          v-katex="arr2matrix(d.fitData.corrMatrix)"
+                        ></div>
                       </v-col>
                     </v-row>
 
@@ -454,7 +473,7 @@
                     <ThePlotDataTable :items="d.data" />
                   </v-card-text>
                 </v-card>
-                <v-btn color="primary">Ajustar</v-btn>
+                <v-btn color="secondary">Ajustar</v-btn>
               </v-container>
             </v-tab-item>
           </v-tabs>
@@ -533,7 +552,7 @@ export default {
       if (newValue === null) {
         this.data[plotIndex]['data'] = []
       } else {
-        this.data[plotIndex]['data'] = this.loadData(newValue)
+        this.data[plotIndex]['data'] = this.loadData(plotIndex, newValue)
       }
     },
     /**
@@ -557,7 +576,7 @@ export default {
      * Reads the file from any format and returns a array
      * @param {File} file
      */
-    loadData(file) {
+    loadData(plotIndex, file) {
       // Calls backend to load the data
       let fr = new FileReader()
       fr.onload = (e) => {
@@ -569,7 +588,17 @@ export default {
             type: type
           })
           .then((res) => {
-            return res.data
+            let output = []
+            res.data.forEach((row) => {
+              output.push({
+                x: String(row[0]),
+                y: String(row[1]),
+                sy: String(row[2]) || '',
+                sx: String(row[3]) || '',
+                use: true
+              })
+              this.data[plotIndex]['data'] = output
+            })
           })
           .catch((err) => {
             console.log(err)
@@ -595,24 +624,18 @@ export default {
         },
         // This is the data returned from backend
         fitData: {
-          params: [
-            {
-              name: 'a',
-              value: 1.11,
-              sigma: 2.32
-            }
-          ],
+          params: [],
           corrMatrix: [
-            [1, 0.5],
-            [0.5, 1]
+            [1, 0],
+            [0, 1]
           ],
           covMatrix: [
-            [1, 0.5],
-            [0.5, 1]
+            [1, 0],
+            [0, 1]
           ],
-          chi2: 32,
+          chi2: 0,
           sumRes: 0,
-          ngl: 54
+          ngl: 0
         }
       })
     },

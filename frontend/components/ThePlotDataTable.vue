@@ -74,8 +74,10 @@
     <v-data-table
       :headers="headers"
       :items="items"
+      :search="search"
       hide-default-footer
       no-data-text="Nenhum dado encontrado"
+      no-results-text="Nenhum dado encontrado"
     >
       <template #top>
         <v-toolbar
@@ -111,6 +113,13 @@
             </template>
             Operações
           </v-tooltip>
+          <v-text-field
+            v-model="search"
+            label="Pesquisar"
+            outlined
+            hide-details
+            dense
+          ></v-text-field>
         </v-toolbar>
       </template>
       <template #item.use="props">
@@ -261,6 +270,7 @@ export default {
 
   data() {
     return {
+      search: '',
       operationsDialog: false,
       operationValue: 0,
       snack: false,
