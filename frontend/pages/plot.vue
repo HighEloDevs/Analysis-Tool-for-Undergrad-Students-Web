@@ -473,7 +473,11 @@
                     <ThePlotDataTable :items="d.data" />
                   </v-card-text>
                 </v-card>
-                <v-btn color="secondary">Ajustar</v-btn>
+                <v-btn
+                  color="secondary"
+                  @click="plot"
+                  >Ajustar</v-btn
+                >
               </v-container>
             </v-tab-item>
           </v-tabs>
@@ -486,11 +490,13 @@
           md="6"
         >
           <v-card
-            height="100%"
-            min-height="500px"
-            flat
-            tile
+            style="height: calc(100vh - 48px)"
+            class="fill-height fill-width d-block"
           >
+            <div
+              ref="canvas"
+              class="fill-height"
+            ></div>
           </v-card>
         </v-col>
       </v-row>
@@ -499,6 +505,8 @@
 </template>
 
 <script>
+import * as echarts from 'echarts'
+
 export default {
   name: 'PlotPage',
   data() {
@@ -510,7 +518,19 @@ export default {
         title: 'Título do projeto',
         subtitle: 'Subtitulo'
       },
-      stepperDialog: false
+      stepperDialog: false,
+      chart: null,
+      canvasOptions: {
+        dataset: [],
+        tooltip: {},
+        xAxis: {
+          type: 'value'
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: []
+      }
     }
   },
   methods: {
@@ -649,11 +669,51 @@ export default {
       if (this.data.length === 0) {
         this.addPlot()
       }
+    },
+
+    plot() {
+      let options = {
+        dataset: this.data.map((d) => {
+          return {
+            source: d.data
+          }
+        }),
+        tooltip: {
+          axisPointer: { type: 'cross' }
+        },
+        xAxis: {
+          type: 'value'
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: this.data.map((d, i) => {
+          return {
+            type: 'scatter',
+            datasetIndex: i,
+            colorBy: 'data',
+            itemStyle: {
+              color: '#77bef7'
+            }
+          }
+        })
+      }
+      this.chart.setOption(options)
+    },
+
+    resizeCanvas() {
+      this.chart.resize()
     }
   },
 
+  computed: {},
+
   mounted() {
     this.addPlot()
+    this.chart = echarts.init(this.$refs.canvas)
+    this.chart.setOption(this.canvasOptions)
+    this.chart.resize()
+    window.addEventListener('resize', this.resizeCanvas)
   }
 }
 </script>
