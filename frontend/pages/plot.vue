@@ -131,6 +131,7 @@
                       v-model="fitDataDialogs[i]"
                       max-width="400px"
                       transition="dialog-transition"
+                      style="z-index: 2001"
                     >
                       <template #activator="{ on, attrs }">
                         <v-btn
@@ -263,6 +264,7 @@
                       v-model="deletePlotDialogs[i]"
                       max-width="500px"
                       transition="dialog-transition"
+                      style="z-index: 2001"
                     >
                       <template #activator="{ on, attrs }">
                         <v-btn
@@ -489,15 +491,11 @@
           cols="12"
           md="6"
         >
-          <v-card
-            style="height: calc(100vh - 48px)"
-            class="fill-height fill-width d-block"
-          >
-            <div
-              ref="canvas"
-              class="fill-height"
-            ></div>
-          </v-card>
+          <div
+            ref="canvas"
+            class="canvas"
+            style="width: 100%; height: calc(100vh - 48px)"
+          ></div>
         </v-col>
       </v-row>
     </v-container>
@@ -671,6 +669,15 @@ export default {
       }
     },
 
+    getRandomColor() {
+      var letters = '0123456789ABCDEF'
+      var color = '#'
+      for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)]
+      }
+      return color
+    },
+
     plot() {
       let options = {
         dataset: this.data.map((d) => {
@@ -682,21 +689,18 @@ export default {
           axisPointer: { type: 'cross' }
         },
         xAxis: {
-          type: 'value'
+          type: 'value',
+          minorTick: {
+            show: true
+          },
+          minorSplitLine: {
+            show: true
+          }
         },
         yAxis: {
           type: 'value'
         },
-        series: this.data.map((d, i) => {
-          return {
-            type: 'scatter',
-            datasetIndex: i,
-            colorBy: 'data',
-            itemStyle: {
-              color: '#77bef7'
-            }
-          }
-        })
+        series: this.series
       }
       this.chart.setOption(options)
     },
@@ -706,14 +710,36 @@ export default {
     }
   },
 
-  computed: {},
+  computed: {
+    series() {
+      return this.data.map((d, i) => {
+        return {
+          type: 'scatter',
+          datasetIndex: i,
+          colorBy: 'data',
+          itemStyle: {
+            color: this.getRandomColor()
+          }
+        }
+      })
+    }
+  },
 
   mounted() {
     this.addPlot()
-    this.chart = echarts.init(this.$refs.canvas)
+    this.chart = echarts.init(
+      this.$refs.canvas,
+      this.$vuetify.theme.dark ? 'dark' : 'light',
+      {
+        width: null,
+        height: null
+      }
+    )
     this.chart.setOption(this.canvasOptions)
-    this.chart.resize()
     window.addEventListener('resize', this.resizeCanvas)
+    setTimeout(() => {
+      this.resizeCanvas()
+    }, 200)
   }
 }
 </script>
@@ -729,5 +755,10 @@ export default {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
 }
 </style>

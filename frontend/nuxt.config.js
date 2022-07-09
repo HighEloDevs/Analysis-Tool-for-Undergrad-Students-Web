@@ -99,13 +99,13 @@ export default {
   auth: {
     strategies: {
       local: {
+        user: {
+          property: 'user'
+        },
         token: {
           property: 'access',
           global: true,
-          maxAge: 43200 // 12h
-        },
-        user: {
-          property: 'user'
+          maxAge: 60 * 30 // 30 minutes
         },
         endpoints: {
           login: {
