@@ -1,30 +1,11 @@
 <template>
-  <v-container
-    class="ma-0 pa-0"
-    fill-height
-    fluid
-  >
+  <v-container class="ma-0 pa-0" fill-height fluid>
     <!-- App Bar -->
-    <v-app-bar
-      color="primary"
-      app
-      dense
-      flat
-    >
+    <!-- <v-app-bar color="primary" app dense flat>
       <v-tooltip right>
         <template #activator="{ on, attrs }">
-          <v-btn
-            v-on="on"
-            v-bind="attrs"
-            to="/"
-            icon
-          >
-            <v-icon
-              class="white--text"
-              small
-            >
-              fa-chevron-left
-            </v-icon>
+          <v-btn v-on="on" v-bind="attrs" to="/" icon>
+            <v-icon class="white--text" small> fa-chevron-left </v-icon>
           </v-btn>
         </template>
         Voltar
@@ -36,14 +17,9 @@
           {{ projectData.subtitle }}
         </span>
       </div>
-      <v-icon
-        class="ml-3 white--text"
-        small
-      >
-        fa-edit
-      </v-icon>
+      <v-icon class="ml-3 white--text" small> fa-edit </v-icon>
       <v-spacer></v-spacer>
-    </v-app-bar>
+    </v-app-bar> -->
 
     <!-- New Plot Dialog -->
     <v-dialog
@@ -56,74 +32,47 @@
     </v-dialog>
 
     <!-- Body -->
-    <v-container
-      class="ma-0 pa-0 align-stretch"
-      fill-height
-      fluid
-    >
-      <v-row class="ma-0">
+    <v-container class="ma-0 pa-0 d-flex" fill-height fluid>
+      <v-row class="align-self-stretch" no-gutters>
         <!-- Left Panel -->
-        <v-col
-          cols="12"
-          md="6"
-          class="ma-0 pa-0"
-        >
-          <v-tabs
-            :vertical="$vuetify.breakpoint.mdAndUp"
-            background-color="primary"
-          >
-            <!-- Tabs -->
-            <div
-              class="d-flex flex-md-column"
-              style="width: 100%; height: 100%"
-            >
-              <v-tab
-                v-for="(_, i) in data"
-                :key="i"
-              >
-                Plot {{ i }}
-              </v-tab>
-              <v-tooltip
-                right
-                :bottom="!$vuetify.breakpoint.mdAndUp"
-              >
-                <template #activator="{ on, attrs }">
-                  <v-btn
-                    v-on="on"
-                    v-bind="attrs"
-                    class="elevation-0 flex-grow-1"
-                    style="height: auto"
-                    color="primary"
-                    tile
-                    @click="addPlot"
-                  >
-                    <v-icon
-                      class="white--text"
-                      v-show="data.length"
-                      dense
-                    >
-                      fa-plus
-                    </v-icon>
-                  </v-btn>
-                </template>
-                Adicionar um Plot
-              </v-tooltip>
-            </div>
+        <v-col cols="12" md="5" class="elevation-8">
+          <v-toolbar color="primary" flat dense>
+            <v-btn icon to="/">
+              <v-icon class="white--text" small> fa-chevron-left </v-icon>
+            </v-btn>
 
-            <!-- Tab Content -->
-            <v-tab-item
-              v-for="(d, i) in data"
-              :key="i"
-            >
+            <v-toolbar-title class="white--text">{{ projectData.title }}</v-toolbar-title>
+
+            <v-spacer></v-spacer>
+
+            <v-btn class="white--text" text @click="addPlot">
+              <v-icon class="white--text" left>fa-plus</v-icon>
+              <span> Adicionar Plot </span>
+            </v-btn>
+
+            <template v-slot:extension>
+              <v-tabs
+                v-model="tab"
+                background-color="primary"
+                dark
+                grow
+                centered
+                show-arrows
+                center-active
+              >
+                <v-tab v-for="(_, i) in data" :key="i"> Plot {{ i }} </v-tab>
+              </v-tabs>
+            </template>
+          </v-toolbar>
+
+          <v-tabs-items v-model="tab">
+            <v-tab-item v-for="(d, i) in data" :key="i">
               <v-container
                 fluid
-                style="height: calc(100vh - 48px)"
+                style="height: calc(100vh - 96px)"
                 class="d-flex flex-column"
               >
-                <v-card
-                  flat
-                  class="overflow-y-auto fill-height"
-                >
+                <v-card flat class="overflow-y-auto flex-grow-1">
                   <v-card-title>
                     <span>Configurações do ajuste</span>
                     <v-spacer></v-spacer>
@@ -134,35 +83,18 @@
                       style="z-index: 2001"
                     >
                       <template #activator="{ on, attrs }">
-                        <v-btn
-                          v-on="on"
-                          v-bind="attrs"
-                          text
-                          color="primary"
-                        >
-                          <v-icon
-                            small
-                            left
-                          >
-                            fa-sliders
-                          </v-icon>
+                        <v-btn v-on="on" v-bind="attrs" text color="primary">
+                          <v-icon small left> fa-sliders </v-icon>
                           Configurações
                         </v-btn>
                       </template>
 
                       <v-card flat>
-                        <v-card-title>
-                          Configurações extras do ajuste
-                        </v-card-title>
+                        <v-card-title> Configurações extras do ajuste </v-card-title>
                         <v-card-text>
-                          <header>
-                            Limites do ajuste no eixo <strong>x</strong>
-                          </header>
+                          <header>Limites do ajuste no eixo <strong>x</strong></header>
                           <v-row>
-                            <v-col
-                              cols="12"
-                              sm="6"
-                            >
+                            <v-col cols="12" sm="6">
                               <v-text-field
                                 v-model="d.options.fitRange[0]"
                                 class="removeArrows"
@@ -174,10 +106,7 @@
                                 dense
                               ></v-text-field>
                             </v-col>
-                            <v-col
-                              cols="12"
-                              sm="6"
-                            >
+                            <v-col cols="12" sm="6">
                               <v-text-field
                                 v-model="d.options.fitRange[1]"
                                 class="removeArrows"
@@ -193,45 +122,32 @@
 
                           <header class="mt-2">Incertezas</header>
                           <v-row>
-                            <v-col
-                              cols="12"
-                              md="6"
-                            >
+                            <v-col cols="12" md="6">
                               <v-checkbox
                                 v-model="d.options.useSx"
                                 class="ma-0"
                                 hide-details
                               >
                                 <template #label>
-                                  <span>
-                                    Considerar em <strong>x</strong>
-                                  </span>
+                                  <span> Considerar em <strong>x</strong> </span>
                                 </template>
                               </v-checkbox>
                             </v-col>
-                            <v-col
-                              cols="12"
-                              md="6"
-                            >
+                            <v-col cols="12" md="6">
                               <v-checkbox
                                 v-model="d.options.useSy"
                                 class="ma-0"
                                 hide-details
                               >
                                 <template #label>
-                                  <span>
-                                    Considerar em <strong>y</strong>
-                                  </span>
+                                  <span> Considerar em <strong>y</strong> </span>
                                 </template>
                               </v-checkbox>
                             </v-col>
                           </v-row>
 
                           <v-row>
-                            <v-col
-                              cols="12"
-                              md="6"
-                            >
+                            <v-col cols="12" md="6">
                               <v-checkbox
                                 v-model="d.options.fit"
                                 class="ma-0"
@@ -242,10 +158,7 @@
                                 </template>
                               </v-checkbox>
                             </v-col>
-                            <v-col
-                              cols="12"
-                              md="6"
-                            >
+                            <v-col cols="12" md="6">
                               <v-checkbox
                                 v-model="d.options.connectDots"
                                 class="ma-0"
@@ -267,12 +180,7 @@
                       style="z-index: 2001"
                     >
                       <template #activator="{ on, attrs }">
-                        <v-btn
-                          v-on="on"
-                          v-bind="attrs"
-                          color="error"
-                          icon
-                        >
+                        <v-btn v-on="on" v-bind="attrs" color="error" icon>
                           <v-icon small>fa-trash</v-icon>
                         </v-btn>
                       </template>
@@ -284,18 +192,10 @@
                           </v-card-title>
                           <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn
-                              color="primary"
-                              text
-                              @click="dialog.value = false"
-                            >
+                            <v-btn color="primary" text @click="dialog.value = false">
                               Cancelar
                             </v-btn>
-                            <v-btn
-                              color="error"
-                              text
-                              @click="removePlot(i)"
-                            >
+                            <v-btn color="error" text @click="removePlot(i)">
                               Remover
                             </v-btn>
                           </v-card-actions>
@@ -317,13 +217,9 @@
                     <header v-show="!!d.params.length">
                       Valores iniciais dos parâmetros
                     </header>
+
                     <v-row>
-                      <v-col
-                        v-for="param in d.params"
-                        :key="param.name"
-                        cols="12"
-                        md="6"
-                      >
+                      <v-col v-for="param in d.params" :key="param.name" cols="12" md="6">
                         <v-text-field
                           :prefix="param.name + ' = '"
                           v-model="param.value"
@@ -347,22 +243,14 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr
-                            v-for="param in d.fitData.params"
-                            :key="param.name"
-                          >
+                          <tr v-for="param in d.fitData.params" :key="param.name">
                             <td>{{ param.name }}</td>
                             <td>{{ param.value }}</td>
                             <td>{{ param.sigma }}</td>
                             <td class="d-flex justify-end">
                               <v-tooltip bottom>
                                 <template #activator="{ on, attrs }">
-                                  <v-btn
-                                    v-on="on"
-                                    v-bind="attrs"
-                                    icon
-                                    small
-                                  >
+                                  <v-btn v-on="on" v-bind="attrs" icon small>
                                     <v-icon small>fa-copy</v-icon>
                                   </v-btn>
                                 </template>
@@ -377,12 +265,7 @@
                             <td class="d-flex justify-end">
                               <v-tooltip bottom>
                                 <template #activator="{ on, attrs }">
-                                  <v-btn
-                                    v-on="on"
-                                    v-bind="attrs"
-                                    icon
-                                    small
-                                  >
+                                  <v-btn v-on="on" v-bind="attrs" icon small>
                                     <v-icon small>fa-copy</v-icon>
                                   </v-btn>
                                 </template>
@@ -393,28 +276,17 @@
                           <tr>
                             <td>
                               {{
-                                d.fitData.chi2
-                                  ? '𝜒²'
-                                  : 'Somatória dos resíduos absolutos'
+                                d.fitData.chi2 ? '𝜒²' : 'Somatória dos resíduos absolutos'
                               }}
                             </td>
                             <td>
-                              {{
-                                d.fitData.chi2
-                                  ? d.fitData.chi2
-                                  : d.fitData.sumRes
-                              }}
+                              {{ d.fitData.chi2 ? d.fitData.chi2 : d.fitData.sumRes }}
                             </td>
                             <td></td>
                             <td class="d-flex justify-end">
                               <v-tooltip bottom>
                                 <template #activator="{ on, attrs }">
-                                  <v-btn
-                                    v-on="on"
-                                    v-bind="attrs"
-                                    icon
-                                    small
-                                  >
+                                  <v-btn v-on="on" v-bind="attrs" icon small>
                                     <v-icon small>fa-copy</v-icon>
                                   </v-btn>
                                 </template>
@@ -435,11 +307,7 @@
                         <span class="font-weight-bold subtitle-1 text-center">
                           Matriz de covariância
                         </span>
-                        <div
-                          class="mt-2"
-                          style="font-size: 20px"
-                          v-katex="arr2matrix(d.fitData.covMatrix)"
-                        ></div>
+                        <BaseMatrixDisplay :matrix="d.fitData.covMatrix" />
                       </v-col>
                       <v-col
                         lg="6"
@@ -449,11 +317,7 @@
                         <span class="font-weight-bold subtitle-1">
                           Matriz de correlação
                         </span>
-                        <div
-                          class="mt-2"
-                          style="font-size: 20px"
-                          v-katex="arr2matrix(d.fitData.corrMatrix)"
-                        ></div>
+                        <BaseMatrixDisplay :matrix="d.fitData.corrMatrix" />
                       </v-col>
                     </v-row>
 
@@ -475,27 +339,21 @@
                     <ThePlotDataTable :items="d.data" />
                   </v-card-text>
                 </v-card>
-                <v-btn
-                  color="secondary"
-                  @click="plot"
-                  >Ajustar</v-btn
-                >
+                <v-btn color="secondary" @click="plot"> Ajustar </v-btn>
               </v-container>
             </v-tab-item>
-          </v-tabs>
+          </v-tabs-items>
         </v-col>
 
         <!-- Canvas -->
-        <v-col
-          class="pa-0"
-          cols="12"
-          md="6"
-        >
-          <div
-            ref="canvas"
-            class="canvas"
-            style="width: 100%; height: calc(100vh - 48px)"
-          ></div>
+        <v-col class="pa-0" cols="12" md="7">
+          <v-toolbar flat dense color="primary">
+            <v-btn color="white" text>
+              <v-icon left>fa-paintbrush</v-icon>
+              Configurações do gráfico
+            </v-btn>
+          </v-toolbar>
+          <div ref="canvas" class="canvas"></div>
         </v-col>
       </v-row>
     </v-container>
@@ -509,25 +367,38 @@ export default {
   name: 'PlotPage',
   data() {
     return {
+      tab: null,
       fitDataDialogs: [],
       deletePlotDialogs: [],
       data: [],
+      stepperDialog: false,
+      chart: null,
       projectData: {
         title: 'Título do projeto',
         subtitle: 'Subtitulo'
       },
-      stepperDialog: false,
-      chart: null,
-      canvasOptions: {
-        dataset: [],
-        tooltip: {},
-        xAxis: {
-          type: 'value'
+      xAxis: {
+        type: 'value',
+        name: 'x',
+        nameLocation: 'middle',
+        minorTick: {
+          show: true
         },
-        yAxis: {
-          type: 'value'
+        minorSplitLine: {
+          show: true
+        }
+      },
+      yAxis: {
+        type: 'value',
+        minorTick: {
+          show: true
         },
-        series: []
+        minorSplitLine: {
+          show: true
+        }
+      },
+      tooltip: {
+        axisPointer: { type: 'cross' }
       }
     }
   },
@@ -543,6 +414,7 @@ export default {
       })
       return '\\begin{bmatrix} ' + output.join(' \\\\ ') + ' \\end{bmatrix}'
     },
+
     /**
      * Triggered when the New Plot Stepper is finished
      * @param {Object} data The data from the stepper
@@ -557,6 +429,7 @@ export default {
       this.data[this.data.length - 1]['file'] = data.file
       this.fit(-1)
     },
+
     /**
      * Triggered when the fit function changes
      * @param {Integer} projectId The project id
@@ -566,6 +439,7 @@ export default {
       // Calls backend to parse the function
       this.fit(plotIndex)
     },
+
     onFileChange(plotIndex, newValue) {
       if (newValue === null) {
         this.data[plotIndex]['data'] = []
@@ -573,6 +447,7 @@ export default {
         this.data[plotIndex]['data'] = this.loadData(plotIndex, newValue)
       }
     },
+
     /**
      * Fits the function to data
      * @param {Integer} plotIndex The index of the plot
@@ -590,6 +465,7 @@ export default {
           console.log(error)
         })
     },
+
     /**
      * Reads the file from any format and returns a array
      * @param {File} file
@@ -624,6 +500,7 @@ export default {
       }
       fr.readAsText(file)
     },
+
     /**
      * Adds a new empty plot to the data
      */
@@ -657,6 +534,7 @@ export default {
         }
       })
     },
+
     /**
      * Removes a plot from the data
      * @param {Integer} plotIndex The index of the plot
@@ -679,30 +557,13 @@ export default {
     },
 
     plot() {
-      let options = {
-        dataset: this.data.map((d) => {
-          return {
-            source: d.data
-          }
-        }),
-        tooltip: {
-          axisPointer: { type: 'cross' }
-        },
-        xAxis: {
-          type: 'value',
-          minorTick: {
-            show: true
-          },
-          minorSplitLine: {
-            show: true
-          }
-        },
-        yAxis: {
-          type: 'value'
-        },
+      this.chart.setOption({
+        dataset: this.dataset,
+        tooltip: this.tooltip,
+        xAxis: this.xAxis,
+        yAxis: this.yAxis,
         series: this.series
-      }
-      this.chart.setOption(options)
+      })
     },
 
     resizeCanvas() {
@@ -722,24 +583,45 @@ export default {
           }
         }
       })
+    },
+    dataset() {
+      return this.data.map((d) => {
+        return {
+          source: d.data
+        }
+      })
+    }
+  },
+
+  watch: {
+    xAxis: {
+      handler() {
+        this.plot()
+      },
+      deep: true
     }
   },
 
   mounted() {
     this.addPlot()
-    this.chart = echarts.init(
+    let chart = echarts.init(
       this.$refs.canvas,
-      this.$vuetify.theme.dark ? 'dark' : 'light',
-      {
-        width: null,
-        height: null
-      }
+      this.$vuetify.theme.dark ? 'dark' : 'light'
     )
-    this.chart.setOption(this.canvasOptions)
-    window.addEventListener('resize', this.resizeCanvas)
+    chart.setOption({
+      dataset: this.dataset,
+      tooltip: this.tooltip,
+      xAxis: this.xAxis,
+      yAxis: this.yAxis,
+      series: this.series
+    })
+    window.addEventListener('resize', () => {
+      chart.resize()
+    })
     setTimeout(() => {
-      this.resizeCanvas()
+      chart.resize()
     }, 200)
+    this.chart = chart
   }
 }
 </script>
@@ -759,6 +641,7 @@ export default {
 
 .canvas {
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 48px);
+  min-height: 500px;
 }
 </style>
