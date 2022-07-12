@@ -31,7 +31,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '~/plugins/axios',
-    '~/plugins/darkModeSelect',
+    '~/plugins/dark-mode-select',
     '~/plugins/katex',
     '~/plugins/vuelidate'
   ],
@@ -94,7 +94,7 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 
-  router: { middleware: ['auth', 'darkModeSelect'] },
+  router: { middleware: ['auth', 'dark-mode-select'] },
 
   auth: {
     strategies: {
