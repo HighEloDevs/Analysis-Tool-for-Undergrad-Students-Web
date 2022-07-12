@@ -1,15 +1,5 @@
 <template>
   <v-container class="ma-0 pa-0" fill-height fluid>
-    <!-- New Plot Dialog -->
-    <!-- <v-dialog
-      v-model="stepperDialog"
-      persistent
-      max-width="550px"
-      transition="dialog-transition"
-    >
-      <ThePlotStepper @finishStepper="onFinishStepper" />
-    </v-dialog> -->
-
     <!-- Body -->
     <v-container class="ma-0 pa-0 d-flex" fill-height fluid>
       <v-row class="align-self-stretch" no-gutters>
@@ -39,7 +29,7 @@
                 show-arrows
                 center-active
               >
-                <v-tab v-for="(_, i) in data" :key="i"> Plot {{ i }} </v-tab>
+                <v-tab v-for="(_, i) in plotData" :key="i"> Plot {{ i }} </v-tab>
                 <v-tab>
                   <v-icon left small>fa-paintbrush</v-icon>
                   Gráfico
@@ -49,7 +39,7 @@
           </v-toolbar>
 
           <v-tabs-items v-model="tab">
-            <v-tab-item v-for="(d, i) in data" :key="i">
+            <v-tab-item v-for="(d, i) in plotData" :key="i">
               <v-container
                 fluid
                 style="height: calc(100vh - 96px)"
@@ -157,7 +147,6 @@
                       </v-card>
                     </v-dialog>
                     <v-dialog
-                      v-model="deletePlotDialogs[i]"
                       max-width="500px"
                       transition="dialog-transition"
                       style="z-index: 2001"
@@ -178,7 +167,14 @@
                             <v-btn color="primary" text @click="dialog.value = false">
                               Cancelar
                             </v-btn>
-                            <v-btn color="error" text @click="removePlot(i)">
+                            <v-btn
+                              color="error"
+                              text
+                              @click="
+                                dialog.value = false
+                                removePlot(i)
+                              "
+                            >
                               Remover
                             </v-btn>
                           </v-card-actions>
@@ -307,7 +303,6 @@
                     <!-- Data -->
                     <v-divider class="mt-6"></v-divider>
                     <v-file-input
-                      v-model="d.file"
                       prepend-icon=""
                       class="mt-6"
                       label="Arquivo de dados"
@@ -317,9 +312,9 @@
                       dense
                       show-size
                       persistent-hint
-                      @change="onFileChange(i, d.file)"
+                      @change="onFileChange(i, $event)"
                     ></v-file-input>
-                    <ThePlotDataTable :items="d.data" />
+                    <PlotTheDataTable :items="d.data" />
                   </v-card-text>
                 </v-card>
                 <v-btn color="secondary" @click="plot"> Ajustar </v-btn>
@@ -374,7 +369,7 @@
                 <v-card-text class="py-0">
                   <v-expansion-panels popout flat>
                     <v-expansion-panel>
-                      <v-expansion-panel-header>Título</v-expansion-panel-header>
+                      <v-expansion-panel-header class="">Título</v-expansion-panel-header>
                       <v-expansion-panel-content>
                         <v-slider
                           v-model="title.textStyle.fontSize"
@@ -627,247 +622,23 @@
 
 <script>
 import * as echarts from 'echarts'
+import { mapMutations, mapState } from 'vuex'
 
 export default {
   name: 'PlotPage',
   data() {
     return {
       tab: null,
-      fitDataDialogs: [],
-      deletePlotDialogs: [],
-      data: [
-        {
-          fitFunction: '',
-          file: null,
-          params: [],
-          data: [],
-          options: {
-            fitRange: [0, 1],
-            useSx: true,
-            useSy: true,
-            fit: true,
-            connectDots: false
-          },
-          // This is the data returned from backend
-          fitData: {
-            params: [],
-            corrMatrix: [
-              [1, 0],
-              [0, 1]
-            ],
-            covMatrix: [
-              [1, 0],
-              [0, 1]
-            ],
-            chi2: 0,
-            sumRes: 0,
-            ngl: 0
-          }
-        }
-      ],
-      stepperDialog: false,
       chart: null,
-      projectData: {
-        title: 'Título do projeto',
-        subtitle: 'Subtitulo'
-      },
-      xAxis: {
-        type: 'value',
-        nameLocation: 'middle',
-        minorTick: {
-          show: true
-        },
-        minorSplitLine: {
-          show: true
-        },
-        nameTextStyle: {
-          fontSize: 12,
-          fontWeight: '400'
-        }
-      },
-      yAxis: {
-        type: 'value',
-        nameLocation: 'middle',
-        minorTick: {
-          show: true
-        },
-        minorSplitLine: {
-          show: true
-        },
-        nameTextStyle: {
-          fontSize: 12,
-          fontWeight: '400'
-        }
-      },
-      title: {
-        left: 'center',
-        top: 10,
-        textStyle: {
-          fontSize: 20,
-          fontWeight: '400'
-        },
-        subtextStyle: {
-          fontSize: 14,
-          fontWeight: '400'
-        }
-      },
-      tooltip: {
-        axisPointer: { type: 'cross' }
-      },
-      grid: {
-        left: '80',
-        right: '80',
-        top: '80',
-        bottom: '80'
-      }
+      fitDataDialogs: []
     }
   },
   methods: {
-    /**
-     * Convert and ndarray to a LaTeX matrix
-     * @param {Array} arr
-     */
-    arr2matrix(arr) {
-      let output = []
-      arr.forEach((row) => {
-        output.push(row.join(' & '))
-      })
-      return '\\begin{bmatrix} ' + output.join(' \\\\ ') + ' \\end{bmatrix}'
-    },
-
-    /**
-     * Triggered when the New Plot Stepper is finished
-     * @param {Object} data The data from the stepper
-     */
-    onFinishStepper(data) {
-      this.stepperDialog = false
-      let arr = this.loadData(data.file)
-      this.addPlot()
-      this.data[this.data.length - 1]['data'] = arr
-      this.data[this.data.length - 1]['params'] = data.params
-      this.data[this.data.length - 1]['fitFunction'] = data.fitFunction
-      this.data[this.data.length - 1]['file'] = data.file
-      this.fit(-1)
-    },
-
-    /**
-     * Triggered when the fit function changes
-     * @param {Integer} projectId The project id
-     * @param {String} newValue
-     */
-    onFitFunctionChange(plotIndex, newValue) {
-      // Calls backend to parse the function
-      this.fit(plotIndex)
-    },
-
-    onFileChange(plotIndex, newValue) {
-      if (newValue === null) {
-        this.data[plotIndex]['data'] = []
-        this.plot()
-      } else {
-        this.loadData(plotIndex, newValue)
-      }
-    },
-
-    /**
-     * Fits the function to data
-     * @param {Integer} plotIndex The index of the plot
-     */
-    fit(plotIndex) {
-      // Calls backend to fit the data
-      let data = this.data[plotIndex]
-      this.$axios
-        .post('/api/fit', data)
-        .then((response) => {
-          // Update the data
-          this.data[plotIndex].fitData = response.data
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    },
-
-    /**
-     * Reads the file from any format and returns a array
-     * @param {File} file
-     */
-    loadData(plotIndex, file) {
-      // Calls backend to load the data
-      let fr = new FileReader()
-      fr.onload = (e) => {
-        let data = e.target.result
-        let type = file.name.split('.').pop()
-        this.$axios
-          .post('/parsers/simple_parser', {
-            data: data,
-            type: type
-          })
-          .then((res) => {
-            let output = []
-            res.data.forEach((row) => {
-              output.push({
-                x: String(row[0]),
-                y: String(row[1]),
-                sy: String(row[2]) || '',
-                sx: String(row[3]) || '',
-                use: true
-              })
-              this.data[plotIndex]['data'] = output
-            })
-            this.plot()
-          })
-          .catch((err) => {
-            console.log(err)
-          })
-      }
-      fr.readAsText(file)
-    },
-
-    /**
-     * Adds a new empty plot to the data
-     */
-    addPlot() {
-      this.data.push({
-        fitFunction: '',
-        file: null,
-        params: [],
-        data: [],
-        options: {
-          fitRange: [0, 1],
-          useSx: true,
-          useSy: true,
-          fit: true,
-          connectDots: false
-        },
-        // This is the data returned from backend
-        fitData: {
-          params: [],
-          corrMatrix: [
-            [1, 0],
-            [0, 1]
-          ],
-          covMatrix: [
-            [1, 0],
-            [0, 1]
-          ],
-          chi2: 0,
-          sumRes: 0,
-          ngl: 0
-        }
-      })
-    },
-
-    /**
-     * Removes a plot from the data
-     * @param {Integer} plotIndex The index of the plot
-     */
-    removePlot(plotIndex) {
-      this.deletePlotDialogs[plotIndex] = false
-      this.data.splice(plotIndex, 1)
-      if (this.data.length === 0) {
-        this.addPlot()
-      }
-    },
+    ...mapMutations({
+      setPlotData: 'plot/setPlotData',
+      addPlot: 'plot/addPlot',
+      removePlot: 'plot/removePlot'
+    }),
 
     getRandomColor() {
       var letters = '0123456789ABCDEF'
@@ -876,6 +647,42 @@ export default {
         color += letters[Math.floor(Math.random() * 16)]
       }
       return color
+    },
+
+    async onFitFunctionChange(plotIndex, newValue) {},
+
+    async onFileChange(plotIndex, file) {
+      let data = []
+      if (file !== null) data = await this.loadData(file)
+      this.setPlotData({
+        index: plotIndex,
+        field: 'data',
+        value: data
+      })
+      this.plot()
+    },
+
+    async loadData(file) {
+      let output = []
+      let text = await file.text()
+      try {
+        let res = await this.$axios.post('/parsers/simple_parser', {
+          data: text,
+          type: file.name.split('.').pop()
+        })
+        res.data.forEach((row) => {
+          output.push({
+            x: String(row[0]) || '',
+            y: String(row[1]) || '',
+            sy: String(row[2]) || '',
+            sx: String(row[3]) || '',
+            use: true
+          })
+        })
+      } catch (error) {
+        console.log(error)
+      }
+      return output
     },
 
     plot() {
@@ -892,8 +699,18 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      plotData: (state) => state.plot.plotData,
+      projectData: (state) => state.plot.projectData,
+      xAxis: (state) => state.plot.xAxis,
+      yAxis: (state) => state.plot.yAxis,
+      title: (state) => state.plot.title,
+      grid: (state) => state.plot.grid,
+      tooltip: (state) => state.plot.tooltip
+    }),
+
     series() {
-      return this.data.map((d, i) => {
+      return this.plotData.map((d, i) => {
         return {
           type: 'scatter',
           datasetIndex: i,
@@ -904,8 +721,9 @@ export default {
         }
       })
     },
+
     dataset() {
-      return this.data.map((d) => {
+      return this.plotData.map((d) => {
         return {
           source: d.data
         }
@@ -926,13 +744,11 @@ export default {
       chart.resize()
     }, 200)
     this.chart = chart
-    this.plot()
   }
 }
 </script>
 
 <style scoped>
-/* Importing KateX library */
 @import '../node_modules/katex/dist/katex.min.css';
 .removeArrows >>> input[type='number'] {
   -moz-appearance: textfield;
@@ -943,7 +759,6 @@ export default {
   -webkit-appearance: none;
   -moz-appearance: none;
 }
-
 .canvas {
   width: 100%;
   height: 100%;

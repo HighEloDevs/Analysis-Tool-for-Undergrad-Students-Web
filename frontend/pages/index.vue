@@ -1,21 +1,8 @@
 <template>
-  <v-container
-    class="ma-0 pa-0"
-    style="max-width: 100%"
-  >
+  <v-container class="ma-0 pa-0" style="max-width: 100%">
     <!-- App Bar -->
-    <v-app-bar
-      color="primary"
-      app
-      clipped-left
-      flat
-      dense
-    >
-      <v-btn
-        @click="toggleDarkMode"
-        color="white"
-        icon
-      >
+    <v-app-bar color="primary" app clipped-left flat dense>
+      <v-btn @click="toggleDarkMode" color="white" icon>
         <v-icon small>{{ $vuetify.theme.dark ? 'fa-moon' : 'fa-sun' }}</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
@@ -30,10 +17,7 @@
     </v-app-bar>
 
     <!-- New folder dialog -->
-    <v-dialog
-      v-model="newFolderDialog"
-      max-width="300px"
-    >
+    <v-dialog v-model="newFolderDialog" max-width="300px">
       <v-card>
         <v-card-title>
           <span class="headline">Criar nova pasta</span>
@@ -53,18 +37,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="error"
-            text
-            @click.native="newFolderDialog = false"
-          >
-            Fechar
-          </v-btn>
-          <v-btn
-            color="primary"
-            text
-            @click.native="createNewFolder(newFolderName)"
-          >
+          <v-btn color="error" text @click="newFolderDialog = false"> Fechar </v-btn>
+          <v-btn color="primary" text @click="createNewFolder(newFolderName)">
             Salvar
           </v-btn>
         </v-card-actions>
@@ -72,25 +46,12 @@
     </v-dialog>
 
     <!-- Navigation Drawer -->
-    <v-navigation-drawer
-      app
-      permanent
-      clipped
-      width="300px"
-      color="transparent"
-    >
+    <v-navigation-drawer app permanent clipped width="300px" color="transparent">
       <v-list dense>
         <v-list-item>
           <v-menu offset-y>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                v-on="on"
-                v-bind="attrs"
-                color="primary"
-                block
-              >
-                Novo Projeto
-              </v-btn>
+              <v-btn v-on="on" v-bind="attrs" color="primary" block> Novo Projeto </v-btn>
             </template>
             <v-list>
               <v-list-item
@@ -106,18 +67,12 @@
             </v-list>
           </v-menu>
         </v-list-item>
-        <v-list-item
-          @click="selectedFolder = -1"
-          dense
-        >
+        <v-list-item @click="selectedFolder = -1" dense>
           <v-list-item-title> Todos os projetos </v-list-item-title>
         </v-list-item>
         <v-divider></v-divider>
         <v-subheader>Pastas</v-subheader>
-        <v-list-item
-          dense
-          @click="newFolderDialog = !newFolderDialog"
-        >
+        <v-list-item dense @click="newFolderDialog = !newFolderDialog">
           <v-list-item-icon>
             <v-icon dense>fa-plus</v-icon>
           </v-list-item-icon>
@@ -140,17 +95,9 @@
             </v-icon>
           </v-list-item-icon>
           <v-list-item-title> {{ item.text }} </v-list-item-title>
-          <v-menu
-            offset-y
-            offset-x
-          >
+          <v-menu offset-y offset-x>
             <template v-slot:activator="{ on }">
-              <v-btn
-                icon
-                small
-                v-on="on"
-                v-on:click.prevent
-              >
+              <v-btn icon small v-on="on" v-on:click.prevent>
                 <v-icon small>fa-ellipsis-vertical</v-icon>
               </v-btn>
             </template>
@@ -171,26 +118,19 @@
                       <v-container
                         class="d-inline align-center justify-center flex-column"
                       >
-                        <v-text-field
-                          v-model="editFolderValue"
-                          label="Nome da pasta"
-                        >
+                        <v-text-field v-model="editFolderValue" label="Nome da pasta">
                         </v-text-field>
                       </v-container>
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn
-                        color="error"
-                        text
-                        @click.native="dialog.value = false"
-                      >
+                      <v-btn color="error" text @click="dialog.value = false">
                         Fechar
                       </v-btn>
                       <v-btn
                         color="primary"
                         text
-                        @click.native="
+                        @click="
                           renameFolder(i, editFolderValue)
                           dialog.value = false
                         "
@@ -231,17 +171,13 @@
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn
-                        color="error"
-                        text
-                        @click.native="dialog.value = false"
-                      >
+                      <v-btn color="error" text @click="dialog.value = false">
                         Fechar
                       </v-btn>
                       <v-btn
                         color="primary"
                         text
-                        @click.native="
+                        @click="
                           recolorFolder(i, editFolderValue)
                           dialog.value = false
                         "
@@ -256,10 +192,7 @@
               <!-- Delete Folder Dialog -->
               <v-dialog max-width="400px">
                 <template v-slot:activator="{ on }">
-                  <v-list-item
-                    v-on="on"
-                    class="red--text"
-                  >
+                  <v-list-item v-on="on" class="red--text">
                     <v-list-item-title>Deletar </v-list-item-title>
                   </v-list-item>
                 </template>
@@ -272,16 +205,11 @@
                     </v-card-title>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn
-                        text
-                        @click.native="dialog.value = false"
-                      >
-                        Fechar
-                      </v-btn>
+                      <v-btn text @click="dialog.value = false"> Fechar </v-btn>
                       <v-btn
                         color="red"
                         text
-                        @click.native="
+                        @click="
                           deleteFolder(i)
                           dialog.value = false
                         "
@@ -296,18 +224,11 @@
           </v-menu>
         </v-list-item>
 
-        <v-list-item
-          @click="selectedFolder = -2"
-          dense
-        >
+        <v-list-item @click="selectedFolder = -2" dense>
           <v-list-item-icon>
-            <v-icon
-              color="grey"
-              dense
-              >{{
-                selectedFolder == -2 ? 'fa-folder-open' : 'fa-folder'
-              }}</v-icon
-            >
+            <v-icon color="grey" dense>{{
+              selectedFolder == -2 ? 'fa-folder-open' : 'fa-folder'
+            }}</v-icon>
           </v-list-item-icon>
           <v-list-item-title> Sem Categoria </v-list-item-title>
         </v-list-item>
@@ -315,11 +236,7 @@
     </v-navigation-drawer>
 
     <!-- Table -->
-    <TheProjectDataTable
-      :headers="headers"
-      :items="projects"
-      :folders="folders"
-    />
+    <TheProjectDataTable :headers="headers" :items="projects" :folders="folders" />
   </v-container>
 </template>
 
