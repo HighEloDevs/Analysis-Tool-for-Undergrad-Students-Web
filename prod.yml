@@ -1,35 +1,58 @@
 version: "3.9"
 services:
+    db:
+        container_name: ATUS_db
+        image: mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_DATABASE=db
+        volumes:
+            - ./databases:/var/lib/mysql
+
+    nginx:
+        container_name: ATUS_nginx
+        image: nginx:1.13
+        ports:
+            - "25565:25565"
+        volumes:
+            - ./nginx:/etc/nginx/conf.d
+            - ./backend/static_root:/usr/src/app/static_root
+        depends_on:
+            - db
+            - frontend
+            - backend
+
     backend:
         container_name: ATUS_backend
-        build:
-            context: ./backend
-        command: bash -c "
-            python manage.py migrate &&
-            gunicorn --workers 3 --bind 0.0.0.0:8000 project.wsgi:application"
+        build: ./backend
         expose:
             - "8000:8000"
-        volumes:
-            - static:/usr/src/app/static_root
-            - media:/usr/src/app/media
+        restart: on-failure:10
+        command: bash -c "
+            python manage.py makemigrations &&
+            python manage.py migrate &&
+            /usr/local/bin/gunicorn django51.wsgi:application -w 3 -b 0.0.0.0:8000"
         environment:
-            - MYSQL_HOST=db
-            - MYSQL_NAME=db
+            - MYSQL_DB=db
             - MYSQL_USER=root
             - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_HOST=db
             - DJANGO_DEBUG=False
             - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
             - DJANGO_EMAIL_HOST_USER=${DJANGO_EMAIL_HOST_USER}
             - DJANGO_EMAIL_HOST_PASSWORD=${DJANGO_EMAIL_HOST_PASSWORD}
-        depends_on:
-            - db
+        volumes:
+            - ./backend:/usr/src/app
+            - ./backend:/code
 
     frontend:
         container_name: ATUS_frontend
         build: ./frontend
         expose:
-            - "3000"
+            - "3000:3000"
         command: bash -c "npm run build && npm run start"
         environment:
             - AXIOS_BASEURL=http://backend:8000/api
             - AXIOS_BROWSER_BASEURL=/api
+        volumes:
+            - ./frontend:/usr/src/app

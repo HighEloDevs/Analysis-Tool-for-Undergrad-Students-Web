@@ -1,41 +1,20 @@
 <template>
   <v-container class="ma-0 pa-0" fill-height fluid>
-    <!-- App Bar -->
-    <!-- <v-app-bar color="primary" app dense flat>
-      <v-tooltip right>
-        <template #activator="{ on, attrs }">
-          <v-btn v-on="on" v-bind="attrs" to="/" icon>
-            <v-icon class="white--text" small> fa-chevron-left </v-icon>
-          </v-btn>
-        </template>
-        Voltar
-      </v-tooltip>
-      <v-spacer></v-spacer>
-      <div class="d-flex flex-column text-center white--text">
-        <span>{{ projectData.title }}</span>
-        <span class="caption grey--text text--lighten-2">
-          {{ projectData.subtitle }}
-        </span>
-      </div>
-      <v-icon class="ml-3 white--text" small> fa-edit </v-icon>
-      <v-spacer></v-spacer>
-    </v-app-bar> -->
-
     <!-- New Plot Dialog -->
-    <v-dialog
+    <!-- <v-dialog
       v-model="stepperDialog"
       persistent
       max-width="550px"
       transition="dialog-transition"
     >
       <ThePlotStepper @finishStepper="onFinishStepper" />
-    </v-dialog>
+    </v-dialog> -->
 
     <!-- Body -->
     <v-container class="ma-0 pa-0 d-flex" fill-height fluid>
       <v-row class="align-self-stretch" no-gutters>
         <!-- Left Panel -->
-        <v-col cols="12" md="5" class="elevation-8">
+        <v-col cols="12" md="5" class="elevation-10">
           <v-toolbar color="primary" flat dense>
             <v-btn icon to="/">
               <v-icon class="white--text" small> fa-chevron-left </v-icon>
@@ -61,6 +40,10 @@
                 center-active
               >
                 <v-tab v-for="(_, i) in data" :key="i"> Plot {{ i }} </v-tab>
+                <v-tab>
+                  <v-icon left small>fa-paintbrush</v-icon>
+                  Gráfico
+                </v-tab>
               </v-tabs>
             </template>
           </v-toolbar>
@@ -342,17 +325,299 @@
                 <v-btn color="secondary" @click="plot"> Ajustar </v-btn>
               </v-container>
             </v-tab-item>
+
+            <v-tab-item>
+              <v-card
+                fluid
+                style="height: calc(100vh - 96px)"
+                class="overflow-y-auto d-flex flex-column pa-3"
+              >
+                <v-card-title>
+                  Configurações do Rápidas
+                  <v-divider class="ml-3"></v-divider>
+                </v-card-title>
+                <v-card-text class="py-0">
+                  <v-text-field
+                    v-model="title.text"
+                    label="Título do gráfico"
+                    outlined
+                    dense
+                    @change="plot"
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="title.subtext"
+                    label="Subtítulo"
+                    outlined
+                    dense
+                    @change="plot"
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="xAxis.name"
+                    label="Título do eixo X"
+                    outlined
+                    dense
+                    @change="plot"
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="yAxis.name"
+                    label="Título do eixo Y"
+                    outlined
+                    dense
+                    @change="plot"
+                  ></v-text-field>
+                </v-card-text>
+
+                <v-card-title class="pt-0">
+                  Configurações Avançadas
+                  <v-divider class="ml-3"></v-divider>
+                </v-card-title>
+                <v-card-text class="py-0">
+                  <v-expansion-panels popout flat>
+                    <v-expansion-panel>
+                      <v-expansion-panel-header>Título</v-expansion-panel-header>
+                      <v-expansion-panel-content>
+                        <v-slider
+                          v-model="title.textStyle.fontSize"
+                          label="Tamanho da fonte"
+                          step="1"
+                          max="30"
+                          min="10"
+                          thumb-label
+                          ticks
+                          @change="plot"
+                        ></v-slider>
+                        <v-slider
+                          v-model="title.textStyle.fontWeight"
+                          label="Grossura da fonte"
+                          step="100"
+                          max="900"
+                          min="100"
+                          thumb-label
+                          ticks
+                          @change="plot"
+                        ></v-slider>
+                        <v-radio-group
+                          v-model="title.left"
+                          class="my-0"
+                          label="Posição"
+                          row
+                          @change="plot"
+                        >
+                          <v-radio label="Esquerda" value="left"></v-radio>
+                          <v-radio label="Centro" value="center"></v-radio>
+                          <v-radio label="Direita" value="right"></v-radio>
+                        </v-radio-group>
+                      </v-expansion-panel-content>
+                    </v-expansion-panel>
+                    <v-expansion-panel>
+                      <v-expansion-panel-header>Subtítulo</v-expansion-panel-header>
+                      <v-expansion-panel-content>
+                        <v-slider
+                          v-model="title.subtextStyle.fontSize"
+                          label="Tamanho da fonte"
+                          step="1"
+                          max="30"
+                          min="5"
+                          thumb-label
+                          ticks
+                          @change="plot"
+                        ></v-slider>
+                        <v-slider
+                          v-model="title.subtextStyle.fontWeight"
+                          label="Grossura da fonte"
+                          step="100"
+                          max="900"
+                          min="100"
+                          thumb-label
+                          ticks
+                          @change="plot"
+                        ></v-slider>
+                      </v-expansion-panel-content>
+                    </v-expansion-panel>
+                    <v-expansion-panel>
+                      <v-expansion-panel-header>Eixo X</v-expansion-panel-header>
+                      <v-expansion-panel-content>
+                        <v-row>
+                          <v-col cols="12" md="4">
+                            <v-text-field
+                              v-model="xAxis.min"
+                              label="Mínimo"
+                              outlined
+                              dense
+                              @change="plot"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="4">
+                            <v-text-field
+                              v-model="xAxis.max"
+                              label="Máximo"
+                              outlined
+                              dense
+                              @change="plot"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="4">
+                            <v-text-field
+                              v-model="xAxis.splitNumber"
+                              label="Número de divisões"
+                              outlined
+                              dense
+                              @change="plot"
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <v-slider
+                          v-model="xAxis.nameTextStyle.fontSize"
+                          label="Tamanho da fonte"
+                          step="1"
+                          max="30"
+                          min="5"
+                          thumb-label
+                          ticks
+                          @change="plot"
+                        ></v-slider>
+                        <v-slider
+                          v-model="xAxis.nameTextStyle.fontWeight"
+                          label="Grossura da fonte"
+                          step="100"
+                          max="900"
+                          min="100"
+                          thumb-label
+                          ticks
+                          @change="plot"
+                        ></v-slider>
+                        <v-radio-group
+                          v-model="xAxis.nameLocation"
+                          class="my-0"
+                          label="Posição"
+                          row
+                          @change="plot"
+                        >
+                          <v-radio label="Esquerda" value="start"></v-radio>
+                          <v-radio label="Centro" value="center"></v-radio>
+                          <v-radio label="Direita" value="end"></v-radio>
+                        </v-radio-group>
+                      </v-expansion-panel-content>
+                    </v-expansion-panel>
+                    <v-expansion-panel>
+                      <v-expansion-panel-header>Eixo Y</v-expansion-panel-header>
+                      <v-expansion-panel-content>
+                        <v-row>
+                          <v-col cols="12" md="4">
+                            <v-text-field
+                              v-model="yAxis.min"
+                              label="Mínimo"
+                              outlined
+                              dense
+                              @change="plot"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="4">
+                            <v-text-field
+                              v-model="yAxis.max"
+                              label="Máximo"
+                              outlined
+                              dense
+                              @change="plot"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="4">
+                            <v-text-field
+                              v-model="yAxis.splitNumber"
+                              label="Número de divisões"
+                              outlined
+                              dense
+                              @change="plot"
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <v-slider
+                          v-model="yAxis.nameTextStyle.fontSize"
+                          label="Tamanho da fonte"
+                          step="1"
+                          max="30"
+                          min="5"
+                          thumb-label
+                          ticks
+                          @change="plot"
+                        ></v-slider>
+                        <v-slider
+                          v-model="yAxis.nameTextStyle.fontWeight"
+                          label="Grossura da fonte"
+                          step="100"
+                          max="900"
+                          min="100"
+                          thumb-label
+                          ticks
+                          @change="plot"
+                        ></v-slider>
+                        <v-radio-group
+                          v-model="yAxis.nameLocation"
+                          class="my-0"
+                          label="Posição"
+                          row
+                          @change="plot"
+                        >
+                          <v-radio label="Baixo" value="start"></v-radio>
+                          <v-radio label="Centro" value="center"></v-radio>
+                          <v-radio label="Cima" value="end"></v-radio>
+                        </v-radio-group>
+                      </v-expansion-panel-content>
+                    </v-expansion-panel>
+                    <v-expansion-panel>
+                      <v-expansion-panel-header>Gráfico</v-expansion-panel-header>
+                      <v-expansion-panel-content>
+                        <v-subheader class="pl-0"> Direita </v-subheader>
+                        <v-slider
+                          v-model="grid.right"
+                          step="5"
+                          max="200"
+                          min="5"
+                          thumb-label
+                          ticks
+                          @change="plot"
+                        ></v-slider>
+                        <v-subheader class="pl-0"> Esquerda </v-subheader>
+                        <v-slider
+                          v-model="grid.left"
+                          step="5"
+                          max="200"
+                          min="5"
+                          thumb-label
+                          ticks
+                          @change="plot"
+                        ></v-slider>
+                        <v-subheader class="pl-0"> Cima </v-subheader>
+                        <v-slider
+                          v-model="grid.top"
+                          step="5"
+                          max="200"
+                          min="5"
+                          thumb-label
+                          ticks
+                          @change="plot"
+                        ></v-slider>
+                        <v-subheader class="pl-0"> Baixo </v-subheader>
+                        <v-slider
+                          v-model="grid.bottom"
+                          step="5"
+                          max="200"
+                          min="5"
+                          thumb-label
+                          ticks
+                          @change="plot"
+                        ></v-slider>
+                      </v-expansion-panel-content>
+                    </v-expansion-panel>
+                  </v-expansion-panels>
+                </v-card-text>
+              </v-card>
+            </v-tab-item>
           </v-tabs-items>
         </v-col>
 
         <!-- Canvas -->
         <v-col class="pa-0" cols="12" md="7">
-          <v-toolbar flat dense color="primary">
-            <v-btn color="white" text>
-              <v-icon left>fa-paintbrush</v-icon>
-              Configurações do gráfico
-            </v-btn>
-          </v-toolbar>
           <div ref="canvas" class="canvas"></div>
         </v-col>
       </v-row>
@@ -370,7 +635,36 @@ export default {
       tab: null,
       fitDataDialogs: [],
       deletePlotDialogs: [],
-      data: [],
+      data: [
+        {
+          fitFunction: '',
+          file: null,
+          params: [],
+          data: [],
+          options: {
+            fitRange: [0, 1],
+            useSx: true,
+            useSy: true,
+            fit: true,
+            connectDots: false
+          },
+          // This is the data returned from backend
+          fitData: {
+            params: [],
+            corrMatrix: [
+              [1, 0],
+              [0, 1]
+            ],
+            covMatrix: [
+              [1, 0],
+              [0, 1]
+            ],
+            chi2: 0,
+            sumRes: 0,
+            ngl: 0
+          }
+        }
+      ],
       stepperDialog: false,
       chart: null,
       projectData: {
@@ -379,26 +673,52 @@ export default {
       },
       xAxis: {
         type: 'value',
-        name: 'x',
         nameLocation: 'middle',
         minorTick: {
           show: true
         },
         minorSplitLine: {
           show: true
+        },
+        nameTextStyle: {
+          fontSize: 12,
+          fontWeight: '400'
         }
       },
       yAxis: {
         type: 'value',
+        nameLocation: 'middle',
         minorTick: {
           show: true
         },
         minorSplitLine: {
           show: true
+        },
+        nameTextStyle: {
+          fontSize: 12,
+          fontWeight: '400'
+        }
+      },
+      title: {
+        left: 'center',
+        top: 10,
+        textStyle: {
+          fontSize: 20,
+          fontWeight: '400'
+        },
+        subtextStyle: {
+          fontSize: 14,
+          fontWeight: '400'
         }
       },
       tooltip: {
         axisPointer: { type: 'cross' }
+      },
+      grid: {
+        left: '80',
+        right: '80',
+        top: '80',
+        bottom: '80'
       }
     }
   },
@@ -443,8 +763,9 @@ export default {
     onFileChange(plotIndex, newValue) {
       if (newValue === null) {
         this.data[plotIndex]['data'] = []
+        this.plot()
       } else {
-        this.data[plotIndex]['data'] = this.loadData(plotIndex, newValue)
+        this.loadData(plotIndex, newValue)
       }
     },
 
@@ -493,6 +814,7 @@ export default {
               })
               this.data[plotIndex]['data'] = output
             })
+            this.plot()
           })
           .catch((err) => {
             console.log(err)
@@ -562,12 +884,10 @@ export default {
         tooltip: this.tooltip,
         xAxis: this.xAxis,
         yAxis: this.yAxis,
-        series: this.series
+        series: this.series,
+        title: this.title,
+        grid: this.grid
       })
-    },
-
-    resizeCanvas() {
-      this.chart.resize()
     }
   },
 
@@ -593,28 +913,12 @@ export default {
     }
   },
 
-  watch: {
-    xAxis: {
-      handler() {
-        this.plot()
-      },
-      deep: true
-    }
-  },
-
   mounted() {
-    this.addPlot()
     let chart = echarts.init(
       this.$refs.canvas,
-      this.$vuetify.theme.dark ? 'dark' : 'light'
+      this.$vuetify.theme.dark ? 'dark' : 'light',
+      { renderer: 'svg' }
     )
-    chart.setOption({
-      dataset: this.dataset,
-      tooltip: this.tooltip,
-      xAxis: this.xAxis,
-      yAxis: this.yAxis,
-      series: this.series
-    })
     window.addEventListener('resize', () => {
       chart.resize()
     })
@@ -622,6 +926,7 @@ export default {
       chart.resize()
     }, 200)
     this.chart = chart
+    this.plot()
   }
 }
 </script>
@@ -641,7 +946,7 @@ export default {
 
 .canvas {
   width: 100%;
-  height: calc(100vh - 48px);
+  height: 100%;
   min-height: 500px;
 }
 </style>

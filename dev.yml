@@ -1,5 +1,27 @@
-version: "3"
+version: "3.9"
 services:
+    db:
+        container_name: ATUS_db
+        image: mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_DATABASE=db
+        volumes:
+            - ./databases:/var/lib/mysql
+
+    nginx:
+        container_name: ATUS_nginx
+        image: nginx:1.13
+        ports:
+            - "25565:25565"
+        volumes:
+            - ./nginx:/etc/nginx/conf.d
+            - ./backend/static_root:/usr/src/app/static_root
+        depends_on:
+            - db
+            - frontend
+            - backend
+
     backend:
         container_name: ATUS_backend
         build: ./backend
@@ -32,7 +54,6 @@ services:
         environment:
             - AXIOS_BASEURL=http://backend:8000/api
             - AXIOS_BROWSER_BASEURL=/api
-            - CHOKIDAR_USEPOLLING=true # This enables the hot reloading
+            - CHOKIDAR_USEPOLLING=true
         volumes:
             - ./frontend:/usr/src/app
-            - /usr/src/app/node_modules
