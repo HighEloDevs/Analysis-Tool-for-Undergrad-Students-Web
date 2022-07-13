@@ -32,30 +32,10 @@ export default {
     state.plotData.splice(index, 1)
   },
 
-  setPlotData: (state, payload) => {
-    let index = payload.index
-    let field = payload.field
-    let value = payload.value
-    state.plotData[index][field] = value
-  },
-
-  setProjectData: (state, field, value) => {
-    state.projectData[field] = value
-  },
-
-  setxAxis: (state, field, value) => {
-    state.xAxis[field] = value
-  },
-
-  setyAxis: (state, field, value) => {
-    state.yAxis[field] = value
-  },
-
-  setTitle: (state, field, value) => {
-    state.title[field] = value
-  },
-
-  setGrid: (state, field, value) => {
-    state.grid[field] = value
+  setData(state, { path, value }) {
+    let props = path.split('.')
+    let lastIndex = props.pop()
+    let lastObj = props.reduce((prev, curr) => prev[curr], state)
+    lastObj[lastIndex] = value
   }
 }

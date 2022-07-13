@@ -41,7 +41,11 @@ export default () => ({
   // Settings for the x-axis of the canvas
   xAxis: {
     type: 'value',
-    nameLocation: 'middle',
+    nameLocation: 'center',
+    name: '',
+    min: '',
+    max: '',
+    splitNumber: '',
     minorTick: {
       show: true
     },
@@ -50,14 +54,18 @@ export default () => ({
     },
     nameTextStyle: {
       fontSize: 12,
-      fontWeight: '400'
+      fontWeight: 400
     }
   },
 
   // Settings for the y-axis of the canvas
   yAxis: {
     type: 'value',
-    nameLocation: 'middle',
+    nameLocation: 'center',
+    name: '',
+    min: '',
+    max: '',
+    splitNumber: '',
     minorTick: {
       show: true
     },
@@ -66,7 +74,7 @@ export default () => ({
     },
     nameTextStyle: {
       fontSize: 12,
-      fontWeight: '400'
+      fontWeight: 400
     }
   },
 
@@ -78,11 +86,11 @@ export default () => ({
     top: 10,
     textStyle: {
       fontSize: 20,
-      fontWeight: '400'
+      fontWeight: 400
     },
     subtextStyle: {
       fontSize: 14,
-      fontWeight: '400'
+      fontWeight: 400
     }
   },
 

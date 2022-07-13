@@ -1,41 +1,55 @@
 <template>
-  <div class="expansion-panel-title">
-    {{ left }}
-  </div>
-  <!-- <v-expansion-panel>
+  <v-expansion-panel>
     <v-expansion-panel-header class="">Título</v-expansion-panel-header>
     <v-expansion-panel-content>
       <v-slider
-        v-model="title.textStyle.fontSize"
+        :value="title.textStyle.fontSize"
         label="Tamanho da fonte"
         step="1"
         max="30"
         min="10"
         thumb-label
         ticks
-        @change="plot"
+        @change="setData({ path: 'title.textStyle.fontSize', value: $event })"
       ></v-slider>
       <v-slider
-        v-model="title.textStyle.fontWeight"
+        :value="title.textStyle.fontWeight"
         label="Grossura da fonte"
         step="100"
         max="900"
         min="100"
         thumb-label
         ticks
-        @change="plot"
+        @change="setData({ path: 'title.textStyle.fontWeight', value: $event })"
       ></v-slider>
-      <v-radio-group v-model="title.left" class="my-0" label="Posição" row @change="plot">
+      <v-radio-group
+        :value="title.left"
+        class="my-0"
+        label="Posição"
+        row
+        @change="setData({ path: 'title.left', value: $event })"
+      >
         <v-radio label="Esquerda" value="left"></v-radio>
         <v-radio label="Centro" value="center"></v-radio>
         <v-radio label="Direita" value="right"></v-radio>
       </v-radio-group>
     </v-expansion-panel-content>
-  </v-expansion-panel> -->
+  </v-expansion-panel>
 </template>
 
 <script>
+import { mapMutations, mapState } from 'vuex'
 export default {
-  props: ['left']
+  computed: {
+    ...mapState({
+      title: (state) => state.plot.title
+    })
+  },
+
+  methods: {
+    ...mapMutations({
+      setData: 'plot/setData'
+    })
+  }
 }
 </script>
