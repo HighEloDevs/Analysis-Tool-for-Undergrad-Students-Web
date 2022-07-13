@@ -125,8 +125,8 @@
       </v-card>
     </v-dialog>
 
-    <v-container fluid style="height: calc(100vh - 96px)" class="d-flex flex-column">
-      <v-card flat class="overflow-y-auto flex-grow-1">
+    <v-container fluid>
+      <v-card flat>
         <v-card-title>
           <span>Configurações do ajuste</span>
           <v-spacer></v-spacer>

@@ -1,7 +1,7 @@
 <template>
   <v-container class="ma-0 pa-0 d-flex" fill-height fluid>
     <v-row class="align-self-stretch" no-gutters>
-      <v-col cols="12" md="5" class="elevation-10">
+      <v-col cols="12" md="5" class="elevation-7 d-flex flex-column">
         <v-toolbar color="primary" flat dense>
           <v-btn icon to="/">
             <v-icon class="white--text" small> fa-chevron-left </v-icon>
@@ -30,14 +30,21 @@
             </v-tabs>
           </template>
         </v-toolbar>
-        <v-tabs-items v-model="tab">
-          <PlotTabItemFitSettings
-            v-for="(_, index) in plotData"
-            :key="index"
-            :index="index"
-          />
-          <PlotTabItemCanvasSettings />
-        </v-tabs-items>
+        <div class="d-flex flex-column" style="height: calc(100vh - 96px)">
+          <v-tabs-items v-model="tab" class="overflow-y-auto flex-grow-1">
+            <PlotTabItemFitSettings
+              v-for="(_, index) in plotData"
+              :key="index"
+              :index="index"
+            />
+            <PlotTabItemCanvasSettings />
+          </v-tabs-items>
+          <v-card>
+            <v-card-text class="pa-2">
+              <v-btn color="primary" block @click="this.plot">Ajustar</v-btn>
+            </v-card-text>
+          </v-card>
+        </div>
       </v-col>
       <v-col class="pa-0" cols="12" md="7">
         <div ref="canvas" class="canvas"></div>
@@ -95,12 +102,12 @@ export default {
   },
 
   watch: {
-    // plotData: {
-    //   handler() {
-    //     this.plot()
-    //   },
-    //   deep: true
-    // },
+    plotData: {
+      handler() {
+        this.plot()
+      },
+      deep: true
+    },
     xAxis: {
       handler() {
         this.plot()
