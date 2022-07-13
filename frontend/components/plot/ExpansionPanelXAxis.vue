@@ -9,7 +9,7 @@
             label="Mínimo"
             outlined
             dense
-            @change="setData({ path: 'xAxis.min', value: $event })"
+            @change="setData({ path: 'xAxis.min', value: $event || null })"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="4">
@@ -18,7 +18,7 @@
             label="Máximo"
             outlined
             dense
-            @change="setData({ path: 'xAxis.max', value: $event })"
+            @change="setData({ path: 'xAxis.max', value: $event || null })"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="4">
@@ -27,7 +27,7 @@
             label="Número de divisões"
             outlined
             dense
-            @change="setData({ path: 'xAxis.splitNumber', value: $event })"
+            @change="setData({ path: 'xAxis.splitNumber', value: $event || null })"
           ></v-text-field>
         </v-col>
       </v-row>

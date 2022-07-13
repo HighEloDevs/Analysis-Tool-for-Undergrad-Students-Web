@@ -211,71 +211,17 @@
 
                     <v-divider class="mt-4 mb-2"></v-divider>
 
-                    <v-simple-table dense>
-                      <template v-slot:default>
-                        <thead>
-                          <tr>
-                            <th class="text-left">Parâmetro</th>
-                            <th class="text-left">Valor</th>
-                            <th class="text-left">Incerteza</th>
-                            <th class="text-right">Ações</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="param in d.fitData.params" :key="param.name">
-                            <td>{{ param.name }}</td>
-                            <td>{{ param.value }}</td>
-                            <td>{{ param.sigma }}</td>
-                            <td class="d-flex justify-end">
-                              <v-tooltip bottom>
-                                <template #activator="{ on, attrs }">
-                                  <v-btn v-on="on" v-bind="attrs" icon small>
-                                    <v-icon small>fa-copy</v-icon>
-                                  </v-btn>
-                                </template>
-                                Copiar
-                              </v-tooltip>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>Graus de liberdade</td>
-                            <td>{{ d.fitData.ngl }}</td>
-                            <td></td>
-                            <td class="d-flex justify-end">
-                              <v-tooltip bottom>
-                                <template #activator="{ on, attrs }">
-                                  <v-btn v-on="on" v-bind="attrs" icon small>
-                                    <v-icon small>fa-copy</v-icon>
-                                  </v-btn>
-                                </template>
-                                Copiar
-                              </v-tooltip>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              {{
-                                d.fitData.chi2 ? '𝜒²' : 'Somatória dos resíduos absolutos'
-                              }}
-                            </td>
-                            <td>
-                              {{ d.fitData.chi2 ? d.fitData.chi2 : d.fitData.sumRes }}
-                            </td>
-                            <td></td>
-                            <td class="d-flex justify-end">
-                              <v-tooltip bottom>
-                                <template #activator="{ on, attrs }">
-                                  <v-btn v-on="on" v-bind="attrs" icon small>
-                                    <v-icon small>fa-copy</v-icon>
-                                  </v-btn>
-                                </template>
-                                Copiar
-                              </v-tooltip>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </template>
-                    </v-simple-table>
+                    <PlotTheFitParamsDataTable
+                      :data="
+                        d.fitData.params.concat([
+                          { name: 'Graus de Liberdade', value: d.fitData.ngl },
+                          {
+                            name: d.fitData.chi2 ? 'χ²' : 'Soma dos resíduos',
+                            value: d.fitData.chi2 || d.fitData.sumRes
+                          }
+                        ])
+                      "
+                    />
 
                     <v-row class="mt-4 align-start">
                       <v-col
@@ -321,7 +267,7 @@
               </v-container>
             </v-tab-item>
 
-            <PlotTabItemCanvasSettings />
+            <LazyPlotTabItemCanvasSettings />
           </v-tabs-items>
         </v-col>
 
@@ -340,74 +286,12 @@ import { mapMutations, mapState } from 'vuex'
 
 export default {
   name: 'PlotPage',
+
   data() {
     return {
       tab: null,
       chart: null,
       fitDataDialogs: []
-    }
-  },
-  methods: {
-    ...mapMutations({
-      setData: 'plot/setData',
-      addPlot: 'plot/addPlot',
-      removePlot: 'plot/removePlot'
-    }),
-
-    getRandomColor() {
-      var letters = '0123456789ABCDEF'
-      var color = '#'
-      for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)]
-      }
-      return color
-    },
-
-    async onFitFunctionChange(plotIndex, newValue) {},
-
-    async onFileChange(plotIndex, file) {
-      let data = []
-      if (file !== null) data = await this.loadData(file)
-      this.setData({
-        path: `plotData.${plotIndex}.data`,
-        value: data
-      })
-      this.plot()
-    },
-
-    async loadData(file) {
-      let output = []
-      let text = await file.text()
-      try {
-        let res = await this.$axios.post('/parsers/simple_parser', {
-          data: text,
-          type: file.name.split('.').pop()
-        })
-        res.data.forEach((row) => {
-          output.push({
-            x: String(row[0]) || '',
-            y: String(row[1]) || '',
-            sy: String(row[2]) || '',
-            sx: String(row[3]) || '',
-            use: true
-          })
-        })
-      } catch (error) {
-        console.log(error)
-      }
-      return output
-    },
-
-    plot() {
-      this.chart.setOption({
-        dataset: this.dataset,
-        tooltip: this.tooltip,
-        xAxis: this.xAxis,
-        yAxis: this.yAxis,
-        series: this.series,
-        title: this.title,
-        grid: this.grid
-      })
     }
   },
 
@@ -490,6 +374,70 @@ export default {
       chart.resize()
     }, 200)
     this.chart = chart
+  },
+
+  methods: {
+    ...mapMutations({
+      setData: 'plot/setData',
+      addPlot: 'plot/addPlot',
+      removePlot: 'plot/removePlot'
+    }),
+
+    getRandomColor() {
+      var letters = '0123456789ABCDEF'
+      var color = '#'
+      for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)]
+      }
+      return color
+    },
+
+    async onFitFunctionChange(plotIndex, newValue) {},
+
+    async onFileChange(plotIndex, file) {
+      let data = []
+      if (file !== null) data = await this.loadData(file)
+      this.setData({
+        path: `plotData.${plotIndex}.data`,
+        value: data
+      })
+      this.plot()
+    },
+
+    async loadData(file) {
+      let output = []
+      let text = await file.text()
+      try {
+        let res = await this.$axios.post('/parsers/simple_parser', {
+          data: text,
+          type: file.name.split('.').pop()
+        })
+        res.data.forEach((row) => {
+          output.push({
+            x: String(row[0]) || '',
+            y: String(row[1]) || '',
+            sy: String(row[2]) || '',
+            sx: String(row[3]) || '',
+            use: true
+          })
+        })
+      } catch (error) {
+        console.log(error)
+      }
+      return output
+    },
+
+    plot() {
+      this.chart.setOption({
+        dataset: this.dataset,
+        tooltip: this.tooltip,
+        xAxis: this.xAxis,
+        yAxis: this.yAxis,
+        series: this.series,
+        title: this.title,
+        grid: this.grid
+      })
+    }
   }
 }
 </script>

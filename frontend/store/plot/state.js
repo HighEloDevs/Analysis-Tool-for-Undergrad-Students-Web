@@ -43,9 +43,9 @@ export default () => ({
     type: 'value',
     nameLocation: 'center',
     name: '',
-    min: '',
-    max: '',
-    splitNumber: '',
+    min: null,
+    max: null,
+    splitNumber: null,
     minorTick: {
       show: true
     },
@@ -63,9 +63,9 @@ export default () => ({
     type: 'value',
     nameLocation: 'center',
     name: '',
-    min: '',
-    max: '',
-    splitNumber: '',
+    min: null,
+    max: null,
+    splitNumber: null,
     minorTick: {
       show: true
     },
