@@ -4,6 +4,7 @@ export default () => ({
   plotData: [
     {
       fitFunction: '',
+      file: null,
       params: [],
       data: [],
       options: {
