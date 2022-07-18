@@ -32,6 +32,14 @@ export default {
     state.plotData.splice(index, 1)
   },
 
+  removeRow: (state, { dataIndex, rowIndex }) => {
+    state.plotData[dataIndex].data.splice(rowIndex, 1)
+  },
+
+  addRow: (state, { dataIndex, values }) => {
+    state.plotData[dataIndex].data.unshift(values)
+  },
+
   setData(state, { path, value }) {
     let props = path.split('.')
     let lastIndex = props.pop()

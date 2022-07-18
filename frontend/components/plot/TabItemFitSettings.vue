@@ -146,26 +146,25 @@
             prefix="f(x) = "
             outlined
             dense
-            @change="setData({ path: `plotData.${index}.fitFunction`, value: $event })"
+            @change="onFitFunctionChange"
           ></v-text-field>
-
           <header v-show="!!data.params.length">Valores iniciais dos parâmetros</header>
-
           <v-row>
-            <v-col v-for="param in data.params" :key="param.name" cols="12" md="6">
+            <v-col v-for="(param, i) in data.params" :key="param.name" cols="12" md="6">
               <v-text-field
-                :prefix="param.name + ' = '"
+                :prefix="`${param.name} = `"
                 :value="param.value"
                 hide-details
                 outlined
                 dense
+                @change="
+                  setData({ path: `plotData.${index}.params.${i}.value`, value: $event })
+                "
               ></v-text-field>
             </v-col>
           </v-row>
           <v-divider class="mt-4 mb-2"></v-divider>
           <PlotTheFitParamsDataTable :data="fitData2Display" />
-
-          <!-- Matrices -->
           <v-row class="mt-4 align-start">
             <v-col
               lg="6"
@@ -186,8 +185,6 @@
               <BaseMatrixDisplay :matrix="data.fitData.corrMatrix" />
             </v-col>
           </v-row>
-
-          <!-- Data -->
           <v-divider class="my-6"></v-divider>
           <v-file-input
             :value="data.file"
@@ -201,7 +198,7 @@
             persistent-hint
             @change="onFileChange(index, $event)"
           ></v-file-input>
-          <PlotTheDataTable :items="data.data" />
+          <PlotTheDataTable :items="data.data" :dataIndex="index" />
         </v-card-text>
       </v-card>
     </v-container>
@@ -267,6 +264,20 @@ export default {
       })
     },
 
+    async onFitFunctionChange(value) {
+      // Replacing fit function in Vuex
+      this.setData({ path: `plotData.${this.index}.fitFunction`, value: value })
+
+      // Parsing fit function
+      let params = await this.parseFitFunction(value)
+
+      // Adding new params to Vuex
+      this.setData({
+        path: `plotData.${this.index}.params`,
+        value: params
+      })
+    },
+
     async loadData(file) {
       let output = []
       let text = await file.text()
@@ -288,6 +299,20 @@ export default {
         console.log(error)
       }
       return output
+    },
+
+    async parseFitFunction(func) {
+      console.log('Parsing fit function...')
+      return [
+        {
+          name: 'Param_01',
+          value: '0'
+        },
+        {
+          name: 'Param_02',
+          value: '20'
+        }
+      ]
     }
   }
 }
