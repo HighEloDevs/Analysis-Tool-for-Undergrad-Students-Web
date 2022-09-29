@@ -1,21 +1,40 @@
-# Analysis Tool for Undergrad Students - Versão Web
+# Analysis Tool for Undergrad Students
 
-## Autores
+[![discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/ZwbuRG7GBx)
 
-- [Guilherme Ferrari](https://github.com/GuiiFerrari)
+- [Analysis Tool for Undergrad Students](#analysis-tool-for-undergrad-students)
+  - [O que é?](#o-que-é)
+  - [Como obter a ferramenta?](#como-obter-a-ferramenta)
+  - [Como contribuir?](#como-contribuir)
+  - [Licença](#licença)
 
-- [Willian Maximo](https://github.com/wmaximo27)
+## O que é?
 
-- [Leonardo Tamayose](https://github.com/leoeiji)
+**Analysis Tool for Undergrad Students** é um software que fornece ferramentas para análise de dados, criação e customização de gráficos etc. Surgiu inicialmente como uma aplicação desktop, mas agora, para termos de portabilidade e facilidade de distribuição, decidimos desenvolver uma versão web.
 
-## Tecnologias utilizadas
+## Como obter a ferramenta?
 
-![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)
-![DjangoREST](https://img.shields.io/badge/DJANGO-REST-ff1709?style=for-the-badge&logo=django&logoColor=white&color=ff1709&labelColor=gray)
-![Nuxtjs](https://img.shields.io/badge/Nuxt-002E3B?style=for-the-badge&logo=nuxtdotjs&logoColor=#00DC82)
-![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
-![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
-![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
-![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
-![Grafana](https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white)
-![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white)
+A ferramenta é online e pode ser acessada pelo link: <https://www.atusweb.xyz>
+
+Caso queira rodar o software localmente para **desenvolvimento**, será necessário seguir alguns passos:
+
+- Clone do repositório
+- Definir as variáveis de ambiente (arquivo .env na pasta do repositório)
+  - MYSQL_ROOT_PASSWORD
+  - DJANGO_SECRET_KEY
+  - DJANGO_EMAIL_HOST_USER
+  - DJANGO_EMAIL_HOST_PASSWORD
+- Instalação do [Docker](https://www.docker.com/)
+- ```docker compose -f ./dev.yml```
+
+## Como contribuir?
+
+Qualquer contribuição, reporte de bugs, correção de bugs, melhorias na documentação e ideias são bem-vindas!
+
+As contribuções ao código podem ser feitas via PRs, reporte de bugs ou ideias podem ser enviadas via e-mail ou via issues.
+
+E-mail para contato: atusdevs@gmail.com
+
+## Licença
+
+[MIT License](https://github.com/git/git-scm.com/blob/main/MIT-LICENSE.txt)
