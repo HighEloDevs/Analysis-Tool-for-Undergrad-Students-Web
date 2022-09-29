@@ -37,4 +37,4 @@ E-mail para contato: atusdevs@gmail.com
 
 ## Licença
 
-[MIT License](https://github.com/git/git-scm.com/blob/main/MIT-LICENSE.txt)
+[MIT](LICENSE)
