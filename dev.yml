@@ -16,7 +16,7 @@ services:
             - "25565:25565"
         volumes:
             - ./nginx:/etc/nginx/conf.d
-            - ./backend/static_root:/usr/src/app/static_root
+            - ./backend_django/static_root:/usr/src/app/static_root
         depends_on:
             - db
             - frontend
@@ -24,7 +24,7 @@ services:
 
     backend:
         container_name: ATUS_backend
-        build: ./backend
+        build: ./backend_django
         expose:
             - "8000:8000"
         restart: on-failure:10
@@ -42,8 +42,8 @@ services:
             - DJANGO_EMAIL_HOST_USER=${DJANGO_EMAIL_HOST_USER}
             - DJANGO_EMAIL_HOST_PASSWORD=${DJANGO_EMAIL_HOST_PASSWORD}
         volumes:
-            - ./backend:/usr/src/app
-            - ./backend:/code
+            - ./backend_django:/usr/src/app
+            - ./backend_django:/code
 
     frontend:
         container_name: ATUS_frontend
