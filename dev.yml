@@ -41,9 +41,6 @@ services:
             - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
             - DJANGO_EMAIL_HOST_USER=${DJANGO_EMAIL_HOST_USER}
             - DJANGO_EMAIL_HOST_PASSWORD=${DJANGO_EMAIL_HOST_PASSWORD}
-        volumes:
-            - ./backend_django:/usr/src/app
-            - ./backend_django:/code
 
     frontend:
         container_name: ATUS_frontend
@@ -55,6 +52,3 @@ services:
             - AXIOS_BASEURL=http://backend:8000/api
             - AXIOS_BROWSER_BASEURL=/api
             - CHOKIDAR_USEPOLLING=true
-        volumes:
-            - ./frontend:/usr/src/app
-            - /usr/src/app/node_modules
